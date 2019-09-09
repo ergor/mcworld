@@ -1,0 +1,23 @@
+height data: kartverket, hoydedata.no
+
+format:
+sections are exported as GeoTIFF, and for each tile x there are the following files:
+
+    x.tif               the heightmap itself
+    x.tif.ovr           overview (3 thumbnails of differing size on separate layers)
+    x.tif.aux.xml       geodata and statistics, eg. min and max height, histogram etc.
+    x.tfw               world file, describes the location, scale and rotation
+    x.sos               SOSI-format file, metadata
+
+the value of a pixel seems to correspond 1:1 to the height in meters.
+
+"I was able to find an alternative Java imaging library called Apache Commons Imaging. 
+It is a pure-Java library that consists of a single small JAR file. 
+It also supports both reading and writing of the TIFF file format and 
+it has built-in support for GeoTIFF tags. It appears to handle all of 
+the common compression formats as well."
+    -> doesnt seem to support 32bit floating point gamma.
+
+alternative:
+https://dzone.com/articles/access-information-geotiff
+    -> geotools.org, gt-geotiff
