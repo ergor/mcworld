@@ -22,3 +22,8 @@ alternative:
 https://dzone.com/articles/access-information-geotiff
     -> geotools.org, gt-geotiff
         -> didnt work with my tiff files.... threw DataSourceException
+
+JAI works, but:
+maven fails to resolve JAI, _unless_ I add geotools repo and install it.
+it seems to pull JAI in as a dependency.
+    -> yes indeed, http://download.osgeo.org/webdav/geotools has JAI
