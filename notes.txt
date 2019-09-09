@@ -21,3 +21,4 @@ the common compression formats as well."
 alternative:
 https://dzone.com/articles/access-information-geotiff
     -> geotools.org, gt-geotiff
+        -> didnt work with my tiff files.... threw DataSourceException
