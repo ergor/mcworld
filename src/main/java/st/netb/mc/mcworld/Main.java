@@ -14,6 +14,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.sun.media.jai.codec.ImageDecoder;
+import st.netb.mc.mcworld.datastructs.Block;
+import st.netb.mc.mcworld.datastructs.WorldSection;
 
 public class Main {
 
@@ -29,9 +31,13 @@ public class Main {
                 ImageDecoder dec = ImageCodec.createImageDecoder(names[0], stream, null);
                 RenderedImage im = dec.decodeAsRenderedImage();
                 Raster raster = im.getData();
-                float[] value = new float[1];
-                raster.getPixel(0, 0, value); // returns height in meters
-                System.out.println(value[0]);
+                //float[] value = new float[1];
+                //raster.getPixel(0, 0, value); // returns height in meters
+                //System.out.println(value[0]);
+
+                List<Block> surface = RasterMapper.heightMapMapper(raster);
+                //WorldSection worldSection = new WorldSection(raster.getWidth(), raster.getHeight());
+                //surface.forEach(worldSection::insertBlock);
             }
             catch (Exception e) {
                 e.printStackTrace();
