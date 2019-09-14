@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.datastructs;
+package st.netb.mc.mcworld.datastructs.minecraft;
 
 import st.netb.mc.mcworld.math.Point3D;
 

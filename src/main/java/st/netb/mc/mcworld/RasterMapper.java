@@ -1,6 +1,6 @@
 package st.netb.mc.mcworld;
 
-import st.netb.mc.mcworld.datastructs.Block;
+import st.netb.mc.mcworld.datastructs.minecraft.Block;
 
 import java.awt.image.Raster;
 import java.util.ArrayList;
