@@ -23,6 +23,10 @@ public class ChunkSurface {
         this.chunkLocation = chunkLocation;
     }
 
+    public Point getChunkLocation() {
+        return chunkLocation;
+    }
+
     /**
      * Checks whether all locations have been assigned a value at least once
      */

@@ -64,13 +64,14 @@ public class WorldMapper {
      * @param globalArea (in param): the entire area of the world
      * @param worldSection (in param): the worldsection
      * @param output (out param): the chunks that are entirely inside this world section
-     * @param intersecting (in/out param): chunks that are _not_ entirely inside this world section
+     * @param incompleteChunks (in/out param): chunks that are _not_ entirely inside this world section
      *                     and thus are incomplete
      * @return whether there are intersecting surface chunks
      */
     public static boolean mapToChunkSurfaces(
             Rectangle2D.Double globalArea,
             WorldSection worldSection,
+            Map<Point, ChunkSurface> incompleteChunks,
             List<ChunkSurface> output,
             List<ChunkSurface> intersecting) {
 
@@ -89,8 +90,14 @@ public class WorldMapper {
 
                 float height = raster.getPixel(x, y, (float[]) null)[0];
 
-                ChunkSurface chunkSurface = chunkSurfaces
-                        .computeIfAbsent(chunkLocation, ChunkSurface::new);
+                ChunkSurface chunkSurface;
+                if (incompleteChunks.containsKey(chunkLocation)) {
+                    chunkSurface = incompleteChunks.get(chunkLocation);
+                }
+                else {
+                    chunkSurface = chunkSurfaces
+                            .computeIfAbsent(chunkLocation, ChunkSurface::new);
+                }
 
                 chunkSurface.insert(blockLocation, height);
             }
@@ -110,6 +117,6 @@ public class WorldMapper {
 
         output.forEach(ChunkSurface::getSurface); // pre-compile
 
-        return !intersecting.isEmpty();
+        return !incompleteChunks.isEmpty();
     }
 }

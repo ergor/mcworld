@@ -5,14 +5,14 @@ import com.sun.media.jai.codec.ByteArraySeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.SeekableStream;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.sun.media.jai.codec.ImageDecoder;
@@ -33,6 +33,8 @@ public class Main {
         Rectangle2D.Double worldArea = getWorldArea(sosiFiles);
         Rectangle2D.Double usableArea = WorldMapper.getUsableArea(worldArea);
 
+        Map<Point, ChunkSurface> incompleteChunks = new HashMap<>();
+
         for (SosiFile sosiFile : sosiFiles) {
             System.out.println(sosiFile.getImageFilePath());
             try {
@@ -50,11 +52,22 @@ public class Main {
                         sosiFile.getEastingMin(),
                         sosiFile.getEastingMax());
 
-                List<ChunkSurface> output = new ArrayList<>(100);
-                List<ChunkSurface> intersecting = new ArrayList<>();
+                List<ChunkSurface> output = new ArrayList<>(500);
+                List<ChunkSurface> intersecting = new ArrayList<>(50);
 
-                boolean hasIntersecting = WorldMapper.mapToChunkSurfaces(
-                        usableArea, worldSection, output, intersecting);
+                WorldMapper.mapToChunkSurfaces(
+                        usableArea, worldSection, incompleteChunks, output, intersecting);
+
+                List<ChunkSurface> updated = incompleteChunks.values().stream()
+                        .filter(ChunkSurface::isComplete)
+                        .collect(Collectors.toList());
+
+                updated.forEach(cs -> {
+                    output.add(cs);
+                    incompleteChunks.remove(cs.getChunkLocation());
+                });
+
+                intersecting.forEach(cs -> incompleteChunks.put(cs.getChunkLocation(), cs));
 
                 System.out.println(output.size());
             }
