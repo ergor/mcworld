@@ -10,10 +10,10 @@ import java.util.regex.Pattern;
 
 public class SosiFile {
 
-    private float northingMin;
-    private float eastingMin;
-    private float northingMax;
-    private float eastingMax;
+    private double northingMin;
+    private double eastingMin;
+    private double northingMax;
+    private double eastingMax;
     private Path imageFilePath;
 
     private static final Pattern coordsPattern = Pattern.compile("\\.\\.NØ\\s+(\\d+)\\s(\\d+)\\s+(\\d+)\\s(\\d+)");
@@ -47,26 +47,26 @@ public class SosiFile {
         this.imageFilePath = Paths.get(file.getParentFile().getPath(), imageFileMatcher.group(1));
     }
 
-    private float fromFixed(String fixedPoint) {
+    private double fromFixed(String fixedPoint) {
         String first = fixedPoint.substring(0, fixedPoint.length()-2);
         String second = fixedPoint.substring(fixedPoint.length() - 2);
 
-        return Float.parseFloat(first + "." + second);
+        return Double.parseDouble(first + "." + second);
     }
 
-    public float getNorthingMin() {
+    public double getNorthingMin() {
         return northingMin;
     }
 
-    public float getEastingMin() {
+    public double getEastingMin() {
         return eastingMin;
     }
 
-    public float getNorthingMax() {
+    public double getNorthingMax() {
         return northingMax;
     }
 
-    public float getEastingMax() {
+    public double getEastingMax() {
         return eastingMax;
     }
 
