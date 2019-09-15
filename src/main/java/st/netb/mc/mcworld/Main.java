@@ -4,42 +4,58 @@ package st.netb.mc.mcworld;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import st.netb.mc.mcworld.datastructs.raw.ChunkSurface;
+
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.formats.FileType;
 import st.netb.mc.mcworld.formats.InputFormat;
 import st.netb.mc.mcworld.formats.SosiFormat;
+import st.netb.mc.mcworld.rendering.IntermediateOutput;
 
 
 public class Main {
 
     public static void main(String[] args) {
 
-        File dir = new File("data/dtm");
+        Path dir = Paths.get("data", "dtm");
 
         InputFormat inputFormat = new SosiFormat(getInputFiles(dir, FileType.SOSI));
+
         List<WorldSection> worldSections = inputFormat.getWorldSections();
 
-        Rectangle2D.Double globalArea = WorldMapper.getUsableArea(worldSections);
+        // 0, 0 -> 406399Ø 6434580N
+        // x, y -> 410102Ø 6430815N
+        Rectangle2D.Double globalArea = WorldMapper.getWorldArea(worldSections);
+        Rectangle2D.Double testArea = new Rectangle2D.Double(
+                406399,
+                6430815,
+                410102 - 406399,
+                6434580 - 6430815
+        );
+        Rectangle2D.Double workingArea = WorldMapper.getUsableArea(testArea);
+        worldSections = worldSections.stream()
+                .filter(ws -> workingArea.contains(ws.getArea()))
+                .collect(Collectors.toList());
 
-        Map<Point, ChunkSurface> incompleteChunks = new HashMap<>();
+        Map<Point, ChunkBuilder> incompleteChunks = new HashMap<>();
 
         IntermediateOutput ioWriter = new IntermediateOutput(new File("tmp"));
 
         for (WorldSection worldSection : worldSections) {
 
-            Tuple<List<ChunkSurface>> chunks =
-                    WorldMapper.mapToChunkSurfaces(globalArea, worldSection, incompleteChunks);
+            Tuple<List<ChunkBuilder>> chunks =
+                    WorldMapper.mapToChunkSurfaces(workingArea, worldSection, incompleteChunks);
 
-            List<ChunkSurface> completeChunks = chunks.first();
-            List<ChunkSurface> intersectingChunks = chunks.second();
+            List<ChunkBuilder> completeChunks = chunks.first();
+            List<ChunkBuilder> intersectingChunks = chunks.second();
 
-            List<ChunkSurface> updatedChunks = incompleteChunks.values().stream()
-                    .filter(ChunkSurface::isComplete)
+            List<ChunkBuilder> updatedChunks = incompleteChunks.values().stream()
+                    .filter(ChunkBuilder::isComplete)
                     .collect(Collectors.toList());
 
             updatedChunks.forEach(cs -> {
@@ -54,10 +70,12 @@ public class Main {
 
             System.out.println("rendered " + completeChunks.size() + " chunks");
         }
+
+        System.out.println("done");
     }
 
-    private static List<File> getInputFiles(File dir, FileType fileType) {
-        return Arrays.stream(dir.listFiles())
+    private static List<File> getInputFiles(Path dir, FileType fileType) {
+        return Arrays.stream(dir.toFile().listFiles())
                 .filter(p -> p.isFile() && p.getName().endsWith(fileType.getExtension()))
                 .sorted()
                 .collect(Collectors.toList());

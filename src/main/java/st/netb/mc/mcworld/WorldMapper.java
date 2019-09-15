@@ -1,6 +1,5 @@
 package st.netb.mc.mcworld;
 
-import st.netb.mc.mcworld.datastructs.raw.ChunkSurface;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
@@ -15,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class WorldMapper {
 
-    private static Rectangle2D.Double getWorldArea(List<WorldSection> worldSections) {
+    public static Rectangle2D.Double getWorldArea(List<WorldSection> worldSections) {
         double globalNorthingMin = Double.MAX_VALUE;
         double globalEastingMin = Double.MAX_VALUE;
         double globalNorthingMax = Double.MIN_VALUE;
@@ -52,9 +51,7 @@ public class WorldMapper {
     /**
      * Return an area that is evenly disivible by chunk size, ie 16.
      */
-    public static Rectangle2D.Double getUsableArea(List<WorldSection> worldSections) {
-
-        Rectangle2D.Double rawArea = getWorldArea(worldSections);
+    public static Rectangle2D.Double getUsableArea(Rectangle2D.Double rawArea) {
 
         double x = Math.ceil(rawArea.x);
         double y = Math.ceil(rawArea.y);
@@ -72,7 +69,7 @@ public class WorldMapper {
      * Maps the pixel in a world section to the chunk it belongs to and the location in the chunk
      * @return A (chunk_coordinates, block_coordinates) tuple.
      */
-    private static Tuple<Point> mapToChunk(Rectangle2D.Double globalArea, WorldSection worldSection, Point pixel) {
+    private static Tuple<Point> mapToChunkLocation(Rectangle2D.Double globalArea, WorldSection worldSection, Point pixel) {
 
         double resolution = worldSection.getResolution();
         Rectangle2D.Double localArea = worldSection.getArea();
@@ -104,44 +101,44 @@ public class WorldMapper {
      *                     and thus are incomplete
      * @return whether there are intersecting surface chunks
      */
-    public static Tuple<List<ChunkSurface>> mapToChunkSurfaces(
+    public static Tuple<List<ChunkBuilder>> mapToChunkSurfaces(
             Rectangle2D.Double globalArea,
             WorldSection worldSection,
-            Map<Point, ChunkSurface> incompleteChunks) {
+            Map<Point, ChunkBuilder> incompleteChunks) {
 
         Raster raster = worldSection.getRaster();
 
-        Map<Point, ChunkSurface> chunkSurfaces = new HashMap<>();
+        Map<Point, ChunkBuilder> chunkBuilderMap = new HashMap<>();
 
         for (int y = 0; y < raster.getHeight(); y++) {
             for (int x = 0; x < raster.getWidth(); x++) {
                 Point pixel = new Point(x, y);
 
-                Tuple<Point> tuple = mapToChunk(globalArea, worldSection, pixel);
+                Tuple<Point> tuple = mapToChunkLocation(globalArea, worldSection, pixel);
                 Point chunkLocation = tuple.first();
                 Point blockLocation = tuple.second();
 
                 float height = raster.getPixel(x, y, (float[]) null)[0];
 
-                ChunkSurface chunkSurface;
+                ChunkBuilder chunkBuilder;
                 if (incompleteChunks.containsKey(chunkLocation)) {
-                    chunkSurface = incompleteChunks.get(chunkLocation);
+                    chunkBuilder = incompleteChunks.get(chunkLocation);
                 }
                 else {
-                    chunkSurface = chunkSurfaces
-                            .computeIfAbsent(chunkLocation, ChunkSurface::new);
+                    chunkBuilder = chunkBuilderMap
+                            .computeIfAbsent(chunkLocation, ChunkBuilder::new);
                 }
 
-                chunkSurface.insert(blockLocation, height);
+                chunkBuilder.insert(blockLocation, height);
             }
         }
 
         return new Tuple<>(
-                chunkSurfaces.values().stream()
-                        .filter(ChunkSurface::isComplete)
+                chunkBuilderMap.values().stream()
+                        .filter(ChunkBuilder::isComplete)
                         .collect(Collectors.toList()),
-                chunkSurfaces.values().stream()
-                        .filter(ChunkSurface::isIncomplete)
+                chunkBuilderMap.values().stream()
+                        .filter(ChunkBuilder::isIncomplete)
                         .collect(Collectors.toList())
         );
     }

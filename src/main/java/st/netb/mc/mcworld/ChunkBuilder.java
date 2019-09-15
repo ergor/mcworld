@@ -1,23 +1,24 @@
-package st.netb.mc.mcworld.datastructs.raw;
+package st.netb.mc.mcworld;
 
 
 import st.netb.mc.mcworld.Constants;
+import st.netb.mc.mcworld.rendering.ChunkHeightmap;
 
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChunkSurface {
+public class ChunkBuilder {
 
     private Point chunkLocation;
     // [y][x] organization is cache-optimized when iterating by x first (ie line by line)
     private float[][] surface = new float[Constants.CHUNK_LEN_Y][Constants.CHUNK_LEN_X];
     // maps each location to how many times there has been value insertions
     private Map<Point, Integer> insertions = new HashMap<>();
-    private boolean isCompiled = false;
+    private ChunkHeightmap chunkHeightmap = null;
 
 
-    public ChunkSurface(Point chunkLocation) {
+    public ChunkBuilder(Point chunkLocation) {
         this.chunkLocation = chunkLocation;
     }
 
@@ -53,13 +54,13 @@ public class ChunkSurface {
      * @return The surface height map
      * @throws Exception The chunk has blocks that haven't been inserted
      */
-    public float[][] getSurface() throws Exception {
+    public ChunkHeightmap build() throws Exception {
 
         if (isIncomplete()) {
             throw new Exception("cannot compile chunk surface; chunk has missing data");
         }
 
-        if (!isCompiled) {
+        if (chunkHeightmap == null) {
             for (int y = 0; y < Constants.CHUNK_LEN_Y; y++) {
                 for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
                     Point point = new Point(x, y);
@@ -72,9 +73,9 @@ public class ChunkSurface {
                 }
             }
 
-            isCompiled = true;
+            chunkHeightmap = new ChunkHeightmap(chunkLocation, surface);
         }
 
-        return surface;
+        return chunkHeightmap;
     }
 }
