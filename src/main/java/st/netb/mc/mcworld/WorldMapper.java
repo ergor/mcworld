@@ -5,7 +5,6 @@ import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
 import java.awt.*;
-import java.awt.geom.Area;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.Raster;
@@ -16,10 +15,46 @@ import java.util.stream.Collectors;
 
 public class WorldMapper {
 
+    private static Rectangle2D.Double getWorldArea(List<WorldSection> worldSections) {
+        double globalNorthingMin = Double.MAX_VALUE;
+        double globalEastingMin = Double.MAX_VALUE;
+        double globalNorthingMax = Double.MIN_VALUE;
+        double globalEastingMax = Double.MIN_VALUE;
+
+        for (WorldSection worldSection : worldSections) {
+            Rectangle2D.Double localArea = worldSection.getArea();
+
+            double northingMin = localArea.getMinY();
+            double northingMax = localArea.getMaxY();
+            double eastingMin = localArea.getMinX();
+            double eastingMax = localArea.getMaxX();
+
+            if (northingMin < globalNorthingMin) {
+                globalNorthingMin = northingMin;
+            }
+            if (northingMax > globalNorthingMax) {
+                globalNorthingMax = northingMax;
+            }
+            if (eastingMin < globalEastingMin) {
+                globalEastingMin = eastingMin;
+            }
+            if (eastingMax > globalEastingMax) {
+                globalEastingMax = eastingMax;
+            }
+        }
+
+        double width = globalEastingMax - globalEastingMin;
+        double height = globalNorthingMax - globalNorthingMin;
+
+        return new Rectangle2D.Double(globalEastingMin, globalNorthingMin, width, height);
+    }
+
     /**
      * Return an area that is evenly disivible by chunk size, ie 16.
      */
-    public static Rectangle2D.Double getUsableArea(Rectangle2D.Double rawArea) {
+    public static Rectangle2D.Double getUsableArea(List<WorldSection> worldSections) {
+
+        Rectangle2D.Double rawArea = getWorldArea(worldSections);
 
         double x = Math.ceil(rawArea.x);
         double y = Math.ceil(rawArea.y);
@@ -35,6 +70,7 @@ public class WorldMapper {
 
     /**
      * Maps the pixel in a world section to the chunk it belongs to and the location in the chunk
+     * @return A (chunk_coordinates, block_coordinates) tuple.
      */
     private static Tuple<Point> mapToChunk(Rectangle2D.Double globalArea, WorldSection worldSection, Point pixel) {
 
@@ -55,9 +91,9 @@ public class WorldMapper {
         int blockX = (int)x % 16;
         int blockY = (int)y % 16;
 
-        Tuple<Point> result = new Tuple<>(new Point(chunkX, chunkY), new Point(blockX, blockY));
-
-        return result;
+        return new Tuple<>(
+                new Point(chunkX, chunkY),
+                new Point(blockX, blockY));
     }
 
     /**
@@ -68,14 +104,11 @@ public class WorldMapper {
      *                     and thus are incomplete
      * @return whether there are intersecting surface chunks
      */
-    public static boolean mapToChunkSurfaces(
+    public static Tuple<List<ChunkSurface>> mapToChunkSurfaces(
             Rectangle2D.Double globalArea,
             WorldSection worldSection,
-            Map<Point, ChunkSurface> incompleteChunks,
-            List<ChunkSurface> output,
-            List<ChunkSurface> intersecting) {
+            Map<Point, ChunkSurface> incompleteChunks) {
 
-        Area localArea = new Area(worldSection.getArea());
         Raster raster = worldSection.getRaster();
 
         Map<Point, ChunkSurface> chunkSurfaces = new HashMap<>();
@@ -103,20 +136,13 @@ public class WorldMapper {
             }
         }
 
-        output.addAll(
+        return new Tuple<>(
                 chunkSurfaces.values().stream()
-                .filter(ChunkSurface::isComplete)
-                .collect(Collectors.toList())
-        );
-
-        intersecting.addAll(
+                        .filter(ChunkSurface::isComplete)
+                        .collect(Collectors.toList()),
                 chunkSurfaces.values().stream()
-                        .filter(s -> !s.isComplete())
+                        .filter(ChunkSurface::isIncomplete)
                         .collect(Collectors.toList())
         );
-
-        output.forEach(ChunkSurface::getSurface); // pre-compile
-
-        return !incompleteChunks.isEmpty();
     }
 }
