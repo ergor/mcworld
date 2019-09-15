@@ -7,5 +7,4 @@ public class Constants {
 
     public static final int CHUNK_LEN_X = 16;
     public static final int CHUNK_LEN_Y = 16;
-    public static final int CHUNK_LEN_Z = 16;
 }

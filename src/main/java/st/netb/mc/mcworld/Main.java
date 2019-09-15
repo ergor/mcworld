@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        File dir = new File("./data/dtm");
+        File dir = new File("data/dtm");
 
         InputFormat inputFormat = new SosiFormat(getInputFiles(dir, FileType.SOSI));
         List<WorldSection> worldSections = inputFormat.getWorldSections();
@@ -27,6 +27,8 @@ public class Main {
         Rectangle2D.Double globalArea = WorldMapper.getUsableArea(worldSections);
 
         Map<Point, ChunkSurface> incompleteChunks = new HashMap<>();
+
+        IntermediateOutput ioWriter = new IntermediateOutput(new File("tmp"));
 
         for (WorldSection worldSection : worldSections) {
 
@@ -47,6 +49,8 @@ public class Main {
 
             intersectingChunks.forEach(cs ->
                     incompleteChunks.put(cs.getChunkLocation(), cs));
+
+            ioWriter.writeFiles(completeChunks);
 
             System.out.println("rendered " + completeChunks.size() + " chunks");
         }
