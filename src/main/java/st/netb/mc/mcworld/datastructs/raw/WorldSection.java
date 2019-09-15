@@ -11,6 +11,12 @@ public class WorldSection {
     private Rectangle2D.Double area;
     private Supplier<Raster> rasterSupplier; // save memory by not loading every raster all at once
 
+    private WorldSection(double resolution, Rectangle2D.Double area, Supplier<Raster> rasterSupplier) {
+        this.resolution = resolution;
+        this.area = area;
+        this.rasterSupplier = rasterSupplier;
+    }
+
     public WorldSection(
             Supplier<Raster> rasterSupplier,
             double resolution,
@@ -40,6 +46,14 @@ public class WorldSection {
 
     public Rectangle2D.Double getArea() {
         return area;
+    }
+
+    public WorldSection mapArea(Rectangle2D.Double area) {
+        return new WorldSection(
+              this.resolution,
+              area,
+              this.rasterSupplier
+        );
     }
 
     public Raster getRaster() {

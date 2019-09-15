@@ -2,6 +2,7 @@ package st.netb.mc.mcworld.rendering;
 
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.ChunkBuilder;
+import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 
 import java.awt.*;
 import java.io.*;
@@ -46,26 +47,21 @@ public class IntermediateOutput {
 
         for (ChunkBuilder chunkBuilder : chunkBuilders) {
 
-            byte[] chunkData = new byte[Constants.CHUNK_LEN_X * Constants.CHUNK_LEN_Y];
-            Point location = chunkBuilder.getChunkLocation();
-
+            ChunkHeightmap chunk;
             try {
-                float[][] heightMap = chunkBuilder.build();
-                for (int y = 0; y < Constants.CHUNK_LEN_Y; y++) {
-                    for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
-                        chunkData[y * Constants.CHUNK_LEN_Y + x] = (byte) Math.ceil(heightMap[y][x]);
-                    }
-                }
+                chunk = chunkBuilder.build();
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
             }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            byte[] chunkData = chunk.getBytes();
+            Point location = chunk.getLocation();
 
             try {
                 String fileName;
                 {
                     int regionX = location.x / Constants.REGION_LEN_X;
-                    int regionY = location.y / Constants.REGION_LEN_Y;
+                    int regionY = location.y / Constants.REGION_LEN_Z;
                     fileName = regionY + "-" + regionX;
                 }
 
@@ -74,11 +70,11 @@ public class IntermediateOutput {
                 RandomAccessFile raf = new RandomAccessFile(outputFile, "rw");
                 raf.setLength(chunkData.length
                         * Constants.REGION_LEN_X
-                        * Constants.REGION_LEN_Y);
+                        * Constants.REGION_LEN_Z);
 
                 {
                     int x = location.x % Constants.REGION_LEN_X;
-                    int y = location.y % Constants.REGION_LEN_Y;
+                    int y = location.y % Constants.REGION_LEN_Z;
 
                     int offset = (y * Constants.REGION_LEN_X * chunkData.length) + (x * chunkData.length);
 

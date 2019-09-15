@@ -16,8 +16,6 @@ import java.util.List;
 
 public interface InputFormat {
 
-    FileType getFileType();
-    Rectangle2D.Double getWorldArea();
     List<WorldSection> getWorldSections();
 
     static Raster readImage(Path filePath) {

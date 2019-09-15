@@ -1,8 +1,7 @@
 package st.netb.mc.mcworld;
 
 
-import st.netb.mc.mcworld.Constants;
-import st.netb.mc.mcworld.rendering.ChunkHeightmap;
+import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 
 import java.awt.*;
 import java.util.HashMap;
@@ -11,8 +10,7 @@ import java.util.Map;
 public class ChunkBuilder {
 
     private Point chunkLocation;
-    // [y][x] organization is cache-optimized when iterating by x first (ie line by line)
-    private float[][] surface = new float[Constants.CHUNK_LEN_Y][Constants.CHUNK_LEN_X];
+    private float[][] surface = new float[Constants.CHUNK_LEN_Z][Constants.CHUNK_LEN_X];
     // maps each location to how many times there has been value insertions
     private Map<Point, Integer> insertions = new HashMap<>();
     private ChunkHeightmap chunkHeightmap = null;
@@ -30,7 +28,7 @@ public class ChunkBuilder {
      * Checks whether all locations have been assigned a value at least once
      */
     public boolean isComplete() {
-        return insertions.size() == Constants.CHUNK_LEN_X * Constants.CHUNK_LEN_Y;
+        return insertions.size() == Constants.CHUNK_LEN_X * Constants.CHUNK_LEN_Z;
     }
 
     public boolean isIncomplete() {
@@ -45,13 +43,13 @@ public class ChunkBuilder {
     }
 
     /**
-     * Compiles the surface and returns it if all data is ready.
+     * Compiles the chunk surface and returns it if all data is ready.
      * Otherwise throws exception.
      * <br>
      * The surface is organized as [y][x] to provide cache-optimizations
      * when iterating by x first (ie line by line).
      *
-     * @return The surface height map
+     * @return The chunk height map
      * @throws Exception The chunk has blocks that haven't been inserted
      */
     public ChunkHeightmap build() throws Exception {
@@ -61,7 +59,7 @@ public class ChunkBuilder {
         }
 
         if (chunkHeightmap == null) {
-            for (int y = 0; y < Constants.CHUNK_LEN_Y; y++) {
+            for (int y = 0; y < Constants.CHUNK_LEN_Z; y++) {
                 for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
                     Point point = new Point(x, y);
                     int n = insertions.get(point);

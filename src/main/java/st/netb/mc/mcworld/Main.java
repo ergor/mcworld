@@ -30,7 +30,7 @@ public class Main {
 
         // 0, 0 -> 406399Ø 6434580N
         // x, y -> 410102Ø 6430815N
-        Rectangle2D.Double globalArea = WorldMapper.getWorldArea(worldSections);
+        //Rectangle2D.Double globalArea = WorldMapper.getWorldArea(worldSections);
         Rectangle2D.Double testArea = new Rectangle2D.Double(
                 406399,
                 6430815,
@@ -42,17 +42,23 @@ public class Main {
                 .filter(ws -> workingArea.contains(ws.getArea()))
                 .collect(Collectors.toList());
 
+        List<WorldSection> normalizedSections = worldSections.stream()
+                .map(w -> w.mapArea(WorldMapper.normalizeArea(workingArea, w.getArea())))
+                .collect(Collectors.toList());
+
+        Rectangle2D.Double normalizedArea = WorldMapper.normalizeArea(workingArea);
+
         Map<Point, ChunkBuilder> incompleteChunks = new HashMap<>();
 
         IntermediateOutput ioWriter = new IntermediateOutput(new File("tmp"));
 
-        for (WorldSection worldSection : worldSections) {
+        for (WorldSection worldSection : normalizedSections) {
 
-            Tuple<List<ChunkBuilder>> chunks =
-                    WorldMapper.mapToChunkSurfaces(workingArea, worldSection, incompleteChunks);
+            Tuple<List<ChunkBuilder>> chunkBuilders =
+                    WorldMapper.toChunkBuilders(normalizedArea, worldSection, incompleteChunks);
 
-            List<ChunkBuilder> completeChunks = chunks.first();
-            List<ChunkBuilder> intersectingChunks = chunks.second();
+            List<ChunkBuilder> completeChunks = chunkBuilders.first();
+            List<ChunkBuilder> intersectingChunks = chunkBuilders.second();
 
             List<ChunkBuilder> updatedChunks = incompleteChunks.values().stream()
                     .filter(ChunkBuilder::isComplete)

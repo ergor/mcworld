@@ -66,10 +66,38 @@ public class WorldMapper {
     }
 
     /**
+     * Returns a rectangle of same size as input, where its origin is zero,
+     * ie. (x_origin, y_origin) == (0,0)
+     * @param area
+     * @return
+     */
+    public static Rectangle2D.Double normalizeArea(Rectangle2D.Double area) {
+        return new Rectangle2D.Double(0, 0, area.width, area.height);
+    }
+
+    /**
+     * Takes a subsection of a reference area whose origin is not in (0, 0),
+     * and normalizes it within that reference.
+     *
+     * @param referenceArea
+     * @param localArea
+     * @return
+     */
+    public static Rectangle2D.Double normalizeArea(
+            Rectangle2D.Double referenceArea,
+            Rectangle2D.Double localArea) {
+        return new Rectangle2D.Double(
+                localArea.x - referenceArea.x,
+                localArea.y - referenceArea.y,
+                localArea.width,
+                localArea.height);
+    }
+
+    /**
      * Maps the pixel in a world section to the chunk it belongs to and the location in the chunk
      * @return A (chunk_coordinates, block_coordinates) tuple.
      */
-    private static Tuple<Point> mapToChunkLocation(Rectangle2D.Double globalArea, WorldSection worldSection, Point pixel) {
+    private static Tuple<Point> toChunkLocation(Rectangle2D.Double globalArea, WorldSection worldSection, Point pixel) {
 
         double resolution = worldSection.getResolution();
         Rectangle2D.Double localArea = worldSection.getArea();
@@ -101,7 +129,7 @@ public class WorldMapper {
      *                     and thus are incomplete
      * @return whether there are intersecting surface chunks
      */
-    public static Tuple<List<ChunkBuilder>> mapToChunkSurfaces(
+    public static Tuple<List<ChunkBuilder>> toChunkBuilders(
             Rectangle2D.Double globalArea,
             WorldSection worldSection,
             Map<Point, ChunkBuilder> incompleteChunks) {
@@ -114,7 +142,7 @@ public class WorldMapper {
             for (int x = 0; x < raster.getWidth(); x++) {
                 Point pixel = new Point(x, y);
 
-                Tuple<Point> tuple = mapToChunkLocation(globalArea, worldSection, pixel);
+                Tuple<Point> tuple = toChunkLocation(globalArea, worldSection, pixel);
                 Point chunkLocation = tuple.first();
                 Point blockLocation = tuple.second();
 

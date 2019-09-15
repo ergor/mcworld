@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.rendering;
+package st.netb.mc.mcworld.datastructs.raw;
 
 import st.netb.mc.mcworld.Constants;
 
@@ -6,20 +6,24 @@ import java.awt.*;
 
 public class ChunkHeightmap {
 
-    public static final int DATA_SZ = Constants.CHUNK_LEN_X * Constants.CHUNK_LEN_Y;
+    public static final int DATA_SZ = Constants.CHUNK_LEN_X * Constants.CHUNK_LEN_Z;
 
-    private int[][] data = new int[Constants.CHUNK_LEN_Y][Constants.CHUNK_LEN_X];
+    private int[][] data = new int[Constants.CHUNK_LEN_Z][Constants.CHUNK_LEN_X];
     private Point location;
 
     public ChunkHeightmap(Point location, float[][] heightmap) {
 
         this.location = location;
 
-        for (int y = 0; y < Constants.CHUNK_LEN_Y; y++) {
+        for (int y = 0; y < Constants.CHUNK_LEN_Z; y++) {
             for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
                 data[y][x] = (int) Math.ceil(heightmap[y][x]);
             }
         }
+    }
+
+    public Point getLocation() {
+        return location;
     }
 
     public int getHeight(int x, int y) {
@@ -29,9 +33,9 @@ public class ChunkHeightmap {
     public byte[] getBytes() {
         byte[] bytes = new byte[DATA_SZ];
 
-        for (int y = 0; y < Constants.CHUNK_LEN_Y; y++) {
+        for (int y = 0; y < Constants.CHUNK_LEN_Z; y++) {
             for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
-                bytes[(y * Constants.CHUNK_LEN_Y) + x] = (byte) data[y][x];
+                bytes[(y * Constants.CHUNK_LEN_Z) + x] = (byte) data[y][x];
             }
         }
 

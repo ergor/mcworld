@@ -30,16 +30,6 @@ public class SosiFormat implements InputFormat {
     }
 
     @Override
-    public FileType getFileType() {
-        return FileType.SOSI;
-    }
-
-    @Override
-    public Rectangle2D.Double getWorldArea() {
-        return null;
-    }
-
-    @Override
     public List<WorldSection> getWorldSections() {
 
         if (worldSections == null) {
