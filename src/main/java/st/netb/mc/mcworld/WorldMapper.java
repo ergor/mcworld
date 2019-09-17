@@ -1,5 +1,6 @@
 package st.netb.mc.mcworld;
 
+import st.netb.mc.mcworld.datastructs.raw.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
@@ -14,14 +15,14 @@ import java.util.stream.Collectors;
 
 public class WorldMapper {
 
-    public static Rectangle2D.Double getWorldArea(List<WorldSection> worldSections) {
+    public static GeoArea getWorldArea(List<WorldSection> worldSections) {
         double globalNorthingMin = Double.MAX_VALUE;
         double globalEastingMin = Double.MAX_VALUE;
         double globalNorthingMax = Double.MIN_VALUE;
         double globalEastingMax = Double.MIN_VALUE;
 
         for (WorldSection worldSection : worldSections) {
-            Rectangle2D.Double localArea = worldSection.getArea();
+            GeoArea localArea = worldSection.getArea();
 
             double northingMin = localArea.getMinY();
             double northingMax = localArea.getMaxY();
@@ -45,13 +46,13 @@ public class WorldMapper {
         double width = globalEastingMax - globalEastingMin;
         double height = globalNorthingMax - globalNorthingMin;
 
-        return new Rectangle2D.Double(globalEastingMin, globalNorthingMin, width, height);
+        return new GeoArea(globalEastingMin, globalNorthingMin, width, height);
     }
 
     /**
      * Return an area that is evenly disivible by chunk size, ie 16.
      */
-    public static Rectangle2D.Double getUsableArea(Rectangle2D.Double rawArea) {
+    public static GeoArea getUsableArea(GeoArea rawArea) {
 
         double x = Math.ceil(rawArea.x);
         double y = Math.ceil(rawArea.y);
@@ -62,7 +63,7 @@ public class WorldMapper {
         int chunkCountEasting = (int) (rawArea.width - xCropLength) / 16;
         int chunkCountNorthing = (int) (rawArea.height - yCropLength) / 16;
 
-        return new Rectangle2D.Double(x, y, chunkCountEasting * 16.0, chunkCountNorthing * 16.0);
+        return new GeoArea(x, y, chunkCountEasting * 16.0, chunkCountNorthing * 16.0);
     }
 
     /**
@@ -71,8 +72,8 @@ public class WorldMapper {
      * @param area
      * @return
      */
-    public static Rectangle2D.Double normalizeArea(Rectangle2D.Double area) {
-        return new Rectangle2D.Double(0, 0, area.width, area.height);
+    public static GeoArea normalizeArea(GeoArea area) {
+        return new GeoArea(0, 0, area.width, area.height);
     }
 
     /**
@@ -83,10 +84,10 @@ public class WorldMapper {
      * @param localArea
      * @return
      */
-    public static Rectangle2D.Double normalizeArea(
-            Rectangle2D.Double referenceArea,
-            Rectangle2D.Double localArea) {
-        return new Rectangle2D.Double(
+    public static GeoArea normalizeArea(
+            GeoArea referenceArea,
+            GeoArea localArea) {
+        return new GeoArea(
                 localArea.x - referenceArea.x,
                 localArea.y - referenceArea.y,
                 localArea.width,
@@ -97,10 +98,10 @@ public class WorldMapper {
      * Maps the pixel in a world section to the chunk it belongs to and the location in the chunk
      * @return A (chunk_coordinates, block_coordinates) tuple.
      */
-    private static Tuple<Point> toChunkLocation(Rectangle2D.Double globalArea, WorldSection worldSection, Point pixel) {
+    private static Tuple<Point> toChunkLocation(GeoArea globalArea, WorldSection worldSection, Point pixel) {
 
         double resolution = worldSection.getResolution();
-        Rectangle2D.Double localArea = worldSection.getArea();
+        GeoArea localArea = worldSection.getArea();
 
         double distanceXToOrigo = localArea.x - globalArea.x;
         double distanceYToOrigo = localArea.y - globalArea.y;
@@ -130,7 +131,7 @@ public class WorldMapper {
      * @return whether there are intersecting surface chunks
      */
     public static Tuple<List<ChunkBuilder>> toChunkBuilders(
-            Rectangle2D.Double globalArea,
+            GeoArea globalArea,
             WorldSection worldSection,
             Map<Point, ChunkBuilder> incompleteChunks) {
 

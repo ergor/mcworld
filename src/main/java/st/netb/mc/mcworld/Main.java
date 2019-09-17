@@ -10,52 +10,61 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import st.netb.mc.mcworld.datastructs.raw.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
+import st.netb.mc.mcworld.datastructs.raw.UTM;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
-import st.netb.mc.mcworld.formats.FileType;
-import st.netb.mc.mcworld.formats.InputFormat;
-import st.netb.mc.mcworld.formats.SosiFormat;
+import st.netb.mc.mcworld.datasource.FileType;
+import st.netb.mc.mcworld.datasource.DataSource;
 import st.netb.mc.mcworld.rendering.IntermediateOutput;
 
 
 public class Main {
 
+    private static List<WorldSection> getWorldSections(FileType dataFileType,
+                                                       Path dataDirectory,
+                                                       Optional<GeoArea> geoArea) {
+
+        List<File> dataSourceFiles = getInputFiles(dataFileType, dataDirectory);
+        DataSource dataSource = DataSource.getInstance(dataFileType, dataSourceFiles);
+
+        List<WorldSection> worldSections = dataSource.getWorldSections();
+
+        return geoArea.map(area -> worldSections.stream()
+                .filter(ws -> area.contains(ws.getArea()))
+                .collect(Collectors.toList())
+        ).orElse(worldSections);
+    }
+
     public static void main(String[] args) {
-
-        Path dir = Paths.get("data", "dtm");
-
-        InputFormat inputFormat = new SosiFormat(getInputFiles(dir, FileType.SOSI));
-
-        List<WorldSection> worldSections = inputFormat.getWorldSections();
 
         // 0, 0 -> 406399Ø 6434580N
         // x, y -> 410102Ø 6430815N
-        //Rectangle2D.Double globalArea = WorldMapper.getWorldArea(worldSections);
-        Rectangle2D.Double testArea = new Rectangle2D.Double(
-                406399,
-                6430815,
-                410102 - 406399,
-                6434580 - 6430815
-        );
-        Rectangle2D.Double workingArea = WorldMapper.getUsableArea(testArea);
-        worldSections = worldSections.stream()
-                .filter(ws -> workingArea.contains(ws.getArea()))
+        //GeoArea globalArea = WorldMapper.getWorldArea(worldSections);
+        UTM minCoords = new UTM(6430815, 406399);
+        UTM maxCoords = new UTM(6434580, 410102);
+        GeoArea testArea = new GeoArea(minCoords, maxCoords);
+
+        GeoArea worldArea = WorldMapper.getUsableArea(testArea);
+
+        List<WorldSection> worldSections = getWorldSections(
+                FileType.SOSI,
+                Paths.get("data", "dtm"),
+                Optional.of(worldArea)
+        ).stream()
+                .map(w -> w.mapArea(WorldMapper.normalizeArea(worldArea, w.getArea())))
                 .collect(Collectors.toList());
 
-        List<WorldSection> normalizedSections = worldSections.stream()
-                .map(w -> w.mapArea(WorldMapper.normalizeArea(workingArea, w.getArea())))
-                .collect(Collectors.toList());
-
-        Rectangle2D.Double normalizedArea = WorldMapper.normalizeArea(workingArea);
+        GeoArea normalizedWorldArea = WorldMapper.normalizeArea(worldArea);
 
         Map<Point, ChunkBuilder> incompleteChunks = new HashMap<>();
 
         IntermediateOutput ioWriter = new IntermediateOutput(new File("tmp"));
 
-        for (WorldSection worldSection : normalizedSections) {
+        for (WorldSection worldSection : worldSections) {
 
             Tuple<List<ChunkBuilder>> chunkBuilders =
-                    WorldMapper.toChunkBuilders(normalizedArea, worldSection, incompleteChunks);
+                    WorldMapper.toChunkBuilders(normalizedWorldArea, worldSection, incompleteChunks);
 
             List<ChunkBuilder> completeChunks = chunkBuilders.first();
             List<ChunkBuilder> intersectingChunks = chunkBuilders.second();
@@ -80,7 +89,7 @@ public class Main {
         System.out.println("done");
     }
 
-    private static List<File> getInputFiles(Path dir, FileType fileType) {
+    private static List<File> getInputFiles(FileType fileType, Path dir) {
         return Arrays.stream(dir.toFile().listFiles())
                 .filter(p -> p.isFile() && p.getName().endsWith(fileType.getExtension()))
                 .sorted()

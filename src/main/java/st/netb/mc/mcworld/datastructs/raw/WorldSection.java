@@ -8,10 +8,10 @@ import java.util.function.Supplier;
 public class WorldSection {
 
     private double resolution; // meters per pixel
-    private Rectangle2D.Double area;
+    private GeoArea area;
     private Supplier<Raster> rasterSupplier; // save memory by not loading every raster all at once
 
-    private WorldSection(double resolution, Rectangle2D.Double area, Supplier<Raster> rasterSupplier) {
+    private WorldSection(double resolution, GeoArea area, Supplier<Raster> rasterSupplier) {
         this.resolution = resolution;
         this.area = area;
         this.rasterSupplier = rasterSupplier;
@@ -32,23 +32,20 @@ public class WorldSection {
          h – the height of the newly constructed Rectangle2D
          */
 
-        double x = eastingMin;
-        double y = northingMin;
+        UTM minimum = new UTM(northingMin, eastingMin);
+        UTM maximum = new UTM(northingMax, eastingMax);
 
-        double w = eastingMax - eastingMin;
-        double h = northingMax - northingMin;
-
-        area = new Rectangle2D.Double(x, y, w, h);
+        area = new GeoArea(minimum, maximum);
 
         this.rasterSupplier = rasterSupplier;
         this.resolution = resolution;
     }
 
-    public Rectangle2D.Double getArea() {
+    public GeoArea getArea() {
         return area;
     }
 
-    public WorldSection mapArea(Rectangle2D.Double area) {
+    public WorldSection mapArea(GeoArea area) {
         return new WorldSection(
               this.resolution,
               area,

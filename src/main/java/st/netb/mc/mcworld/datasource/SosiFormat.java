@@ -1,8 +1,7 @@
-package st.netb.mc.mcworld.formats;
+package st.netb.mc.mcworld.datasource;
 
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class SosiFormat implements InputFormat {
+public class SosiFormat implements DataSource {
 
     private List<SosiFile> files;
     private List<WorldSection> worldSections;
@@ -36,7 +35,7 @@ public class SosiFormat implements InputFormat {
             worldSections = new ArrayList<>(files.size());
             for (SosiFile file : files) {
                 WorldSection worldSection = new WorldSection(
-                        () -> InputFormat.readImage(file.imageFilePath),
+                        () -> DataSource.readImage(file.imageFilePath),
                         file.resolution,
                         file.northingMin,
                         file.northingMax,

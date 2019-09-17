@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.formats;
+package st.netb.mc.mcworld.datasource;
 
 import com.sun.media.jai.codec.ByteArraySeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
@@ -6,17 +6,21 @@ import com.sun.media.jai.codec.ImageDecoder;
 import com.sun.media.jai.codec.SeekableStream;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
-import java.awt.geom.Rectangle2D;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
 
-public interface InputFormat {
+public interface DataSource {
 
     List<WorldSection> getWorldSections();
+
+    static DataSource getInstance(FileType fileType, List<File> dataSourceFiles) {
+        return fileType.initializer.apply(dataSourceFiles);
+    }
 
     static Raster readImage(Path filePath) {
         try {
