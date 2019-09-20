@@ -1,7 +1,9 @@
 package st.netb.mc.mcworld.datastructs.raw;
 
 
-import java.awt.geom.Rectangle2D;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
+
 import java.awt.image.Raster;
 import java.util.function.Supplier;
 
@@ -32,8 +34,8 @@ public class WorldSection {
          h – the height of the newly constructed Rectangle2D
          */
 
-        UTM minimum = new UTM(northingMin, eastingMin);
-        UTM maximum = new UTM(northingMax, eastingMax);
+        UTMLocation minimum = new UTMLocation(northingMin, eastingMin);
+        UTMLocation maximum = new UTMLocation(northingMax, eastingMax);
 
         area = new GeoArea(minimum, maximum);
 

@@ -1,12 +1,11 @@
 package st.netb.mc.mcworld;
 
-import st.netb.mc.mcworld.datastructs.raw.GeoArea;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.awt.image.Raster;
 import java.util.HashMap;
 import java.util.List;

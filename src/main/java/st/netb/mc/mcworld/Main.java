@@ -2,7 +2,6 @@
 package st.netb.mc.mcworld;
 
 import java.awt.*;
-import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,9 +9,9 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import st.netb.mc.mcworld.datastructs.raw.GeoArea;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
-import st.netb.mc.mcworld.datastructs.raw.UTM;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datasource.FileType;
 import st.netb.mc.mcworld.datasource.DataSource;
@@ -41,8 +40,8 @@ public class Main {
         // 0, 0 -> 406399Ø 6434580N
         // x, y -> 410102Ø 6430815N
         //GeoArea globalArea = WorldMapper.getWorldArea(worldSections);
-        UTM minCoords = new UTM(6430815, 406399);
-        UTM maxCoords = new UTM(6434580, 410102);
+        UTMLocation minCoords = new UTMLocation(6430815, 406399);
+        UTMLocation maxCoords = new UTMLocation(6434580, 410102);
         GeoArea testArea = new GeoArea(minCoords, maxCoords);
 
         GeoArea worldArea = WorldMapper.getUsableArea(testArea);

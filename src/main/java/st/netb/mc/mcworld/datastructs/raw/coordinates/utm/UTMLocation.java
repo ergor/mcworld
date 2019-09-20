@@ -1,10 +1,14 @@
-package st.netb.mc.mcworld.datastructs.raw;
+package st.netb.mc.mcworld.datastructs.raw.coordinates.utm;
 
-public class UTM {
+
+import java.awt.geom.Point2D;
+
+public class UTMLocation {
+
     private double northing;
     private double easting;
 
-    public UTM(double northing, double easting) {
+    public UTMLocation(double northing, double easting) {
         this.northing = northing;
         this.easting = easting;
     }
