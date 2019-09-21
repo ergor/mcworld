@@ -3,11 +3,10 @@ package st.netb.mc.mcworld.coordinates;
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 
-public class BlockLocation extends Location {
+public class BlockLocation extends MinecraftLocation {
 
     public BlockLocation(int x, int z) {
-        this.x = x;
-        this.z = z;
+        super(x, z);
     }
 
     /**
@@ -15,7 +14,7 @@ public class BlockLocation extends Location {
      * and the block's location within that chunk
      * @return
      */
-    public Tuple<Location> referencedToChunk() {
+    public Tuple<MinecraftLocation> referencedToChunk() {
 
         int blockX = x % Constants.CHUNK_LEN_X;
         int blockZ = z % Constants.CHUNK_LEN_Z;

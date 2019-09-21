@@ -1,7 +1,6 @@
 
 package st.netb.mc.mcworld;
 
-import java.awt.*;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,8 +8,10 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
+import st.netb.mc.mcworld.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMArea;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datasource.FileType;
@@ -20,50 +21,25 @@ import st.netb.mc.mcworld.rendering.IntermediateOutput;
 
 public class Main {
 
-    private static List<WorldSection> getWorldSections(FileType dataFileType,
-                                                       Path dataDirectory,
-                                                       Optional<GeoArea> geoArea) {
-
-        List<File> dataSourceFiles = getInputFiles(dataFileType, dataDirectory);
-        DataSource dataSource = DataSource.getInstance(dataFileType, dataSourceFiles);
-
-        List<WorldSection> worldSections = dataSource.getWorldSections();
-
-        return geoArea.map(area -> worldSections.stream()
-                .filter(ws -> area.contains(ws.getArea()))
-                .collect(Collectors.toList())
-        ).orElse(worldSections);
-    }
-
     public static void main(String[] args) {
 
-        // 0, 0 -> 406399Ø 6434580N
-        // x, y -> 410102Ø 6430815N
-        //GeoArea globalArea = WorldMapper.getWorldArea(worldSections);
-        UTMLocation minCoords = new UTMLocation(6430815, 406399);
-        UTMLocation maxCoords = new UTMLocation(6434580, 410102);
-        GeoArea testArea = new GeoArea(minCoords, maxCoords);
+        World world = getWorld(FileType.SOSI, Paths.get("data", "dtm"));
 
-        GeoArea worldArea = WorldMapper.getUsableArea(testArea);
+        UTMArea testArea = new UTMArea(
+                new UTMLocation(6430815, 406399),
+                new UTMLocation(6434580, 410102));
 
-        List<WorldSection> worldSections = getWorldSections(
-                FileType.SOSI,
-                Paths.get("data", "dtm"),
-                Optional.of(worldArea)
-        ).stream()
-                .map(w -> w.mapArea(WorldMapper.normalizeArea(worldArea, w.getArea())))
+        List<WorldSection> worldSections = world.getSections().stream()
+                .filter(ws -> testArea.contains(ws.getArea()))
                 .collect(Collectors.toList());
 
-        GeoArea normalizedWorldArea = WorldMapper.normalizeArea(worldArea);
-
-        Map<Point, ChunkBuilder> incompleteChunks = new HashMap<>();
+        Map<ChunkLocation, ChunkBuilder> incompleteChunks = new HashMap<>();
 
         IntermediateOutput ioWriter = new IntermediateOutput(new File("tmp"));
 
         for (WorldSection worldSection : worldSections) {
-
             Tuple<List<ChunkBuilder>> chunkBuilders =
-                    WorldMapper.toChunkBuilders(normalizedWorldArea, worldSection, incompleteChunks);
+                    WorldMapper.toChunkBuilders(world, worldSection, incompleteChunks);
 
             List<ChunkBuilder> completeChunks = chunkBuilders.first();
             List<ChunkBuilder> intersectingChunks = chunkBuilders.second();
@@ -82,16 +58,22 @@ public class Main {
 
             ioWriter.writeFiles(completeChunks);
 
-            System.out.println("rendered " + completeChunks.size() + " chunks");
+            System.out.println("rendered " + completeChunks.size() + " chunks, " + intersectingChunks.size() + " on hold");
         }
 
         System.out.println("done");
     }
 
-    private static List<File> getInputFiles(FileType fileType, Path dir) {
-        return Arrays.stream(dir.toFile().listFiles())
-                .filter(p -> p.isFile() && p.getName().endsWith(fileType.getExtension()))
+
+    private static World getWorld(FileType dataFileType, Path dataDirectory) {
+
+        List<File> dataSourceFiles = Arrays.stream(dataDirectory.toFile().listFiles())
+                .filter(p -> p.isFile() && p.getName().endsWith(dataFileType.getExtension()))
                 .sorted()
                 .collect(Collectors.toList());
+
+        DataSource dataSource = DataSource.getInstance(dataFileType, dataSourceFiles);
+
+        return new World(dataSource.getWorldSections());
     }
 }

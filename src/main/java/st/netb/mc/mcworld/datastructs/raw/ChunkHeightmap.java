@@ -1,17 +1,17 @@
 package st.netb.mc.mcworld.datastructs.raw;
 
 import st.netb.mc.mcworld.Constants;
+import st.netb.mc.mcworld.coordinates.ChunkLocation;
 
-import java.awt.*;
 
 public class ChunkHeightmap {
 
     public static final int DATA_SZ = Constants.CHUNK_LEN_X * Constants.CHUNK_LEN_Z;
 
     private int[][] data = new int[Constants.CHUNK_LEN_Z][Constants.CHUNK_LEN_X];
-    private Point location;
+    private ChunkLocation location;
 
-    public ChunkHeightmap(Point location, float[][] heightmap) {
+    public ChunkHeightmap(ChunkLocation location, float[][] heightmap) {
 
         this.location = location;
 
@@ -22,7 +22,7 @@ public class ChunkHeightmap {
         }
     }
 
-    public Point getLocation() {
+    public ChunkLocation getLocation() {
         return location;
     }
 

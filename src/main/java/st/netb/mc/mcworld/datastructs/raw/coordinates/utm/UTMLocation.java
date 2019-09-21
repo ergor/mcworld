@@ -1,23 +1,19 @@
 package st.netb.mc.mcworld.datastructs.raw.coordinates.utm;
 
 
-import java.awt.geom.Point2D;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoLocation;
 
-public class UTMLocation {
-
-    private double northing;
-    private double easting;
+public class UTMLocation extends GeoLocation {
 
     public UTMLocation(double northing, double easting) {
-        this.northing = northing;
-        this.easting = easting;
+        super(easting, northing);
     }
 
     public double getN() {
-        return northing;
+        return y;
     }
 
     public double getE() {
-        return easting;
+        return x;
     }
 }

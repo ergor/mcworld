@@ -7,4 +7,9 @@ public class GeoLocation extends Point2D.Double {
     public GeoLocation(double x, double y) {
         super(x, y);
     }
+
+    @Override
+    public String toString() {
+        return "(" + x + ", " + y + ")";
+    }
 }

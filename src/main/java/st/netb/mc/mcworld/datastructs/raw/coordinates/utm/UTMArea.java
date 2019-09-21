@@ -31,17 +31,41 @@ public class UTMArea extends GeoArea {
     }
 
     @Override
-    public GeoLocation getOrigin() {
-        return new GeoLocation(minimum.getE(), minimum.getN());
+    public GeoLocation getMinCoords() {
+        return minimum;
+    }
+
+    @Override
+    public GeoLocation getMaxCoords() {
+        return maximum;
+    }
+
+    @Override
+    public GeoArea makeContainer(GeoArea otherArea) {
+        if (!(otherArea instanceof UTMArea)) {
+            throw new RuntimeException("tried to cointain non-UTM area within UTM area");
+        }
+        UTMArea area = (UTMArea) otherArea;
+
+        double northingMin = Math.min(minimum.getN(), area.minimum.getN());
+        double eastingMin = Math.min(minimum.getE(), area.minimum.getE());
+
+        double northingMax = Math.max(maximum.getN(), area.maximum.getN());
+        double eastingMax = Math.max(maximum.getE(), area.maximum.getE());
+
+        return new UTMArea(
+                new UTMLocation(northingMin, eastingMin),
+                new UTMLocation(northingMax, eastingMax));
     }
 
     @Override
     protected WorldGrid asSubGridOf(GeoArea container) {
+
         WorldGrid subGrid = new WorldGrid(
-                minimum.getE(),
-                container.getHeight() - maximum.getN(),
-                getWidth(),
-                getHeight()
+                this.minimum.getE() - container.getMinCoords().x,
+                container.getHeight() - (this.maximum.getN() - container.getMinCoords().y),
+                this.getWidth(),
+                this.getHeight()
         );
 
         return subGrid;

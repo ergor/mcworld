@@ -1,6 +1,8 @@
 package st.netb.mc.mcworld.datasource;
 
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMArea;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,13 +36,12 @@ public class SosiFormat implements DataSource {
         if (worldSections == null) {
             worldSections = new ArrayList<>(files.size());
             for (SosiFile file : files) {
-                WorldSection worldSection = new WorldSection(
+                WorldSection<UTMArea> worldSection = new WorldSection<>(
                         () -> DataSource.readImage(file.imageFilePath),
                         file.resolution,
-                        file.northingMin,
-                        file.northingMax,
-                        file.eastingMin,
-                        file.eastingMax);
+                        new UTMArea(
+                                new UTMLocation(file.northingMin, file.eastingMin),
+                                new UTMLocation(file.northingMax, file.eastingMax)));
                 worldSections.add(worldSection);
             }
         }

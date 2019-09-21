@@ -4,15 +4,17 @@ import st.netb.mc.mcworld.coordinates.WorldGrid;
 
 
 /**
- * Interface for all 2D coordinate systems that maps to in game coordinate system
+ * Interface for all 2D coordinate systems that is agnostic to positive and negative directions
  */
 public abstract class GeoArea {
 
-    abstract public double getWidth();
-    abstract public double getHeight();
-    abstract public GeoLocation getOrigin();
+    public abstract double getWidth();
+    public abstract double getHeight();
+    public abstract GeoLocation getMinCoords();
+    public abstract GeoLocation getMaxCoords();
+    public abstract GeoArea makeContainer(GeoArea otherArea);
 
-    abstract protected WorldGrid asSubGridOf(GeoArea container);
+    protected abstract WorldGrid asSubGridOf(GeoArea container);
 
     public static WorldGrid toWorldGrid(GeoArea area) {
         return new WorldGrid(
@@ -25,6 +27,22 @@ public abstract class GeoArea {
 
     public static WorldGrid toWorldGrid(GeoArea area, GeoArea subArea) {
         return subArea.asSubGridOf(area);
+    }
+
+    public boolean contains(GeoArea area) {
+        return this.getMinCoords().x <= area.getMinCoords().x
+                && this.getMaxCoords().x >= area.getMaxCoords().x
+                && this.getMinCoords().y <= area.getMinCoords().y
+                && this.getMaxCoords().y >= area.getMaxCoords().y;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s, %s; w=%f, h=%f",
+                getMinCoords().toString(),
+                getMaxCoords().toString(),
+                getWidth(),
+                getHeight());
     }
 }
 

@@ -2,9 +2,12 @@ package st.netb.mc.mcworld.rendering;
 
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.ChunkBuilder;
+import st.netb.mc.mcworld.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.coordinates.MinecraftLocation;
+import st.netb.mc.mcworld.coordinates.RegionLocation;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
+import st.netb.mc.mcworld.datastructs.raw.Tuple;
 
-import java.awt.*;
 import java.io.*;
 import java.nio.file.Paths;
 import java.util.List;
@@ -55,15 +58,13 @@ public class IntermediateOutput {
                 continue;
             }
             byte[] chunkData = chunk.getBytes();
-            Point location = chunk.getLocation();
 
             try {
-                String fileName;
-                {
-                    int regionX = location.x / Constants.REGION_LEN_X;
-                    int regionY = location.y / Constants.REGION_LEN_Z;
-                    fileName = regionY + "-" + regionX;
-                }
+                Tuple<MinecraftLocation> locationTuple = chunk.getLocation().referencedToRegion();
+                ChunkLocation chunkLocation = (ChunkLocation) locationTuple.first();
+                RegionLocation regionLocation = (RegionLocation) locationTuple.second();
+
+                String fileName = regionLocation.z + "-" + regionLocation.x;
 
                 File outputFile = new File(Paths.get(outputDir.getPath(), fileName).toString());
 
@@ -72,14 +73,10 @@ public class IntermediateOutput {
                         * Constants.REGION_LEN_X
                         * Constants.REGION_LEN_Z);
 
-                {
-                    int x = location.x % Constants.REGION_LEN_X;
-                    int y = location.y % Constants.REGION_LEN_Z;
+                int offset = (chunkLocation.z * Constants.REGION_LEN_X * chunkData.length)
+                        + (chunkLocation.x * chunkData.length);
 
-                    int offset = (y * Constants.REGION_LEN_X * chunkData.length) + (x * chunkData.length);
-
-                    raf.seek(offset);
-                }
+                raf.seek(offset);
                 raf.write(chunkData);
                 raf.close();
             }
