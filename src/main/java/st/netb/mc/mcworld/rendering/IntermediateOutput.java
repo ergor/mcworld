@@ -14,20 +14,27 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * Writes the height of each block at surface position (x, y)
+ * Writes the height of each block at surface position (x, z)
  * as a single byte in an intermediate file.
- * Since a chunk has 16x16 blocks, the file shall be 256 bytes long.
- * <br><br>
+ * The intermediate files are orginazied in regions like the
+ * anvil world format. Each region is comprised of 32x32 chunks,
+ * and each chunk is comprised of 16x16 blocks.
+ *
+ * <h2>Data organization</h2>
+ * <h3>Chunk</h3>
  * Byte0 corresponds to (0, 0), and byte255 to (15, 15).
  * The bytes are saved line by line, ie. the first 16 bytes
  * correspond to (0..15, 0), the next 16 bytes (0..15, 1) etc.
- * <br><br>
+ * <h3>Region</h3>
+ * Byte 0..255 corresponds to chunk0, byte 256..511 to chunk1 etc.
+ *
+ * <h2>Output</h2>
  * The output filename shall follow the pattern of y-x.
- * For example, the chunk at (0, 5) will get the name "5-0"
+ * For example, the region at (0, 5) will get the name "5-0"
  */
 public class IntermediateOutput {
 
-    private static final Pattern tempFilePattern = Pattern.compile("\\d+-\\d+");
+    public static final Pattern tempFilePattern = Pattern.compile("(\\d+)-(\\d+)");
     private File outputDir;
 
     public IntermediateOutput(File outputDir) {

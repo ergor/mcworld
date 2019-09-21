@@ -15,9 +15,20 @@ public class ChunkHeightmap {
 
         this.location = location;
 
-        for (int y = 0; y < Constants.CHUNK_LEN_Z; y++) {
+        for (int z = 0; z < Constants.CHUNK_LEN_Z; z++) {
             for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
-                data[y][x] = (int) Math.ceil(heightmap[y][x]);
+                data[z][x] = (int) Math.ceil(heightmap[z][x]);
+            }
+        }
+    }
+
+    public ChunkHeightmap(ChunkLocation location, byte[] rawData) {
+
+        this.location = location;
+
+        for (int z = 0; z < Constants.CHUNK_LEN_Z; z++) {
+            for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
+                data[z][x] = Byte.toUnsignedInt(rawData[x + z * Constants.CHUNK_LEN_Z]);
             }
         }
     }
@@ -33,9 +44,9 @@ public class ChunkHeightmap {
     public byte[] getBytes() {
         byte[] bytes = new byte[DATA_SZ];
 
-        for (int y = 0; y < Constants.CHUNK_LEN_Z; y++) {
+        for (int z = 0; z < Constants.CHUNK_LEN_Z; z++) {
             for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
-                bytes[(y * Constants.CHUNK_LEN_Z) + x] = (byte) data[y][x];
+                bytes[(z * Constants.CHUNK_LEN_Z) + x] = (byte) data[z][x];
             }
         }
 

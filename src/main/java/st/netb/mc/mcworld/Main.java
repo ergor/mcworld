@@ -16,6 +16,7 @@ import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datasource.FileType;
 import st.netb.mc.mcworld.datasource.DataSource;
+import st.netb.mc.mcworld.rendering.GifRenderer;
 import st.netb.mc.mcworld.rendering.IntermediateOutput;
 
 
@@ -35,7 +36,9 @@ public class Main {
 
         Map<ChunkLocation, ChunkBuilder> incompleteChunks = new HashMap<>();
 
-        IntermediateOutput ioWriter = new IntermediateOutput(new File("tmp"));
+        File temporaryDir = new File("tmp");
+
+        IntermediateOutput ioWriter = new IntermediateOutput(temporaryDir);
 
         for (WorldSection worldSection : worldSections) {
             Tuple<List<ChunkBuilder>> chunkBuilders =
@@ -60,6 +63,10 @@ public class Main {
 
             System.out.println("rendered " + completeChunks.size() + " chunks, " + intersectingChunks.size() + " on hold");
         }
+
+        System.out.println("rendering GIF...");
+        GifRenderer gif = new GifRenderer(temporaryDir, new File("out"));
+        gif.render();
 
         System.out.println("done");
     }

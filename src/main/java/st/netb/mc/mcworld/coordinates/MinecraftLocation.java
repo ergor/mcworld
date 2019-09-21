@@ -1,11 +1,24 @@
 package st.netb.mc.mcworld.coordinates;
 
+import st.netb.mc.mcworld.datastructs.raw.Tuple;
+
+import java.util.function.Supplier;
+
 public abstract class MinecraftLocation {
 
     public int x;
     public int z;
 
+    ReferenceFrame referenceFrame;
+
     public MinecraftLocation(int x, int z) {
+        this.referenceFrame = ReferenceFrame.WORLD;
+        this.x = x;
+        this.z = z;
+    }
+
+    public MinecraftLocation(int x, int z, ReferenceFrame referenceFrame) {
+        this.referenceFrame = referenceFrame;
         this.x = x;
         this.z = z;
     }
@@ -24,6 +37,27 @@ public abstract class MinecraftLocation {
 
     public void setZ(int z) {
         this.z = z;
+    }
+
+    public ReferenceFrame getReferenceFrame() {
+        return referenceFrame;
+    }
+
+    public boolean isAbsolutePosition() {
+        return referenceFrame == ReferenceFrame.WORLD;
+    }
+
+    public boolean isRelativePosition() {
+        return !isAbsolutePosition();
+    }
+
+    Tuple<MinecraftLocation> shiftReference(Supplier<Tuple<MinecraftLocation>> shifter) {
+
+        if (isRelativePosition()) {
+            throw new RuntimeException("MinecraftLocation: can only shift reference if referenced to world");
+        }
+
+        return shifter.get();
     }
 
     @Override
