@@ -3,6 +3,7 @@ package st.netb.mc.mcworld;
 
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 
 import java.util.HashMap;
@@ -38,7 +39,7 @@ public class ChunkBuilder {
 
     public void insert(BlockLocation blockLocation, float height) {
         // add the value; we'll get the average of all additions later
-        surface[blockLocation.z][blockLocation.x] += height;
+        surface[blockLocation.getZ(ReferenceFrame.CHUNK)][blockLocation.getX(ReferenceFrame.CHUNK)] += height;
         Integer ins = insertions.computeIfAbsent(blockLocation, key -> 0);
         insertions.put(blockLocation, ins + 1);
     }
@@ -62,7 +63,7 @@ public class ChunkBuilder {
         if (chunkHeightmap == null) {
             for (int z = 0; z < Constants.CHUNK_LEN_Z; z++) {
                 for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
-                    BlockLocation blockLocation = new BlockLocation(x, z);
+                    BlockLocation blockLocation = new BlockLocation(x, z, ReferenceFrame.CHUNK);
                     int n = insertions.get(blockLocation);
                     surface[z][x] /= n; // get average of all insertions at this location
 

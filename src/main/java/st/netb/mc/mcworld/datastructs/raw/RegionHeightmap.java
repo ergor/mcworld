@@ -2,7 +2,7 @@ package st.netb.mc.mcworld.datastructs.raw;
 
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
 
 import java.util.Arrays;
 
@@ -42,23 +42,22 @@ public class RegionHeightmap {
     public int getHeight(int x, int z) {
 
         Tuple<MinecraftLocation> locationTuple = new BlockLocation(x, z)
-                .referencedToChunk();
+                .tryReferencedTo(ReferenceFrame.CHUNK);
 
         BlockLocation blockLocation = (BlockLocation) locationTuple.first();
         ChunkLocation chunkLocation = (ChunkLocation) locationTuple.second();
 
-        return data[chunkLocation.z][chunkLocation.x].getHeight(blockLocation.x, blockLocation.z);
+        return data[chunkLocation.getZ()][chunkLocation.getX()]
+                .getHeight(
+                        blockLocation.getX(ReferenceFrame.CHUNK),
+                        blockLocation.getZ(ReferenceFrame.CHUNK));
     }
 
     public void insertChunk(ChunkHeightmap chunk) {
         ChunkLocation chunkLocation = chunk.getLocation();
 
-        if (chunkLocation.isAbsolutePosition()) {
-            throw new NotImplementedException();
-        }
-        else {
-            this.data[chunkLocation.z][chunkLocation.x] = chunk;
-        }
+        this.data[chunkLocation.getZ(ReferenceFrame.REGION)]
+                 [chunkLocation.getX(ReferenceFrame.REGION)] = chunk;
     }
 
     public RegionLocation getLocation() {

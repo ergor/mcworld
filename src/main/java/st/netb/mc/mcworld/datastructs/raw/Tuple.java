@@ -1,5 +1,7 @@
 package st.netb.mc.mcworld.datastructs.raw;
 
+import java.util.Objects;
+
 public class Tuple<T> {
 
     private T first;
@@ -16,5 +18,20 @@ public class Tuple<T> {
 
     public T second() {
         return second;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Tuple) {
+            Tuple that = (Tuple) obj;
+            return Objects.equals(this.first, that.first)
+                    && Objects.equals(this.second, that.second);
+        }
+        return super.equals(obj);
     }
 }

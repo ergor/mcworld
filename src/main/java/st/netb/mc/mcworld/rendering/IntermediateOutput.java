@@ -4,6 +4,7 @@ import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.ChunkBuilder;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
@@ -67,11 +68,11 @@ public class IntermediateOutput {
             byte[] chunkData = chunk.getBytes();
 
             try {
-                Tuple<MinecraftLocation> locationTuple = chunk.getLocation().referencedToRegion();
+                Tuple<MinecraftLocation> locationTuple = chunk.getLocation().tryReferencedTo(ReferenceFrame.REGION);
                 ChunkLocation chunkLocation = (ChunkLocation) locationTuple.first();
                 RegionLocation regionLocation = (RegionLocation) locationTuple.second();
 
-                String fileName = regionLocation.z + "-" + regionLocation.x;
+                String fileName = regionLocation.getZ() + "-" + regionLocation.getX();
 
                 File outputFile = new File(Paths.get(outputDir.getPath(), fileName).toString());
 
@@ -80,8 +81,8 @@ public class IntermediateOutput {
                         * Constants.REGION_LEN_X
                         * Constants.REGION_LEN_Z);
 
-                int offset = (chunkLocation.z * Constants.REGION_LEN_Z * chunkData.length)
-                        + (chunkLocation.x * chunkData.length);
+                int offset = (chunkLocation.getZ(ReferenceFrame.REGION) * Constants.REGION_LEN_Z * chunkData.length)
+                        + (chunkLocation.getX(ReferenceFrame.REGION) * chunkData.length);
 
                 raf.seek(offset);
                 raf.write(chunkData);

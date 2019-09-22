@@ -37,8 +37,8 @@ public class ChunkHeightmap {
         return location;
     }
 
-    public int getHeight(int x, int y) {
-        return data[y][x];
+    public int getHeight(int x, int z) {
+        return data[z][x];
     }
 
     public byte[] getBytes() {

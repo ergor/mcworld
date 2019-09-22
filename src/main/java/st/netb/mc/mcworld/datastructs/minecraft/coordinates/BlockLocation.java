@@ -1,7 +1,12 @@
 package st.netb.mc.mcworld.datastructs.minecraft.coordinates;
 
 import st.netb.mc.mcworld.Constants;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.FrameTransition;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrameShifter;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
+
+import java.util.*;
 
 public class BlockLocation extends MinecraftLocation {
 
@@ -13,22 +18,27 @@ public class BlockLocation extends MinecraftLocation {
         super(x, z, referenceFrame);
     }
 
-    /**
-     * Gets the {@link ChunkLocation} this block is withing,
-     * and the block's location within that chunk
-     * @return
-     */
-    public Tuple<MinecraftLocation> referencedToChunk() {
+    private static Map<FrameTransition, ReferenceFrameShifter> referenceShifters;
+    static {
+        Map<FrameTransition, ReferenceFrameShifter> map = new HashMap<>();
 
-        return super.shiftReference(this::referenceShifter);
+        map.put(new FrameTransition(ReferenceFrame.WORLD, ReferenceFrame.CHUNK),
+                BlockLocation::worldToChunkReferenceShifter);
+
+        referenceShifters = Collections.unmodifiableMap(map);
     }
 
-    private Tuple<MinecraftLocation> referenceShifter() {
-        int blockX = x % Constants.CHUNK_LEN_X;
-        int blockZ = z % Constants.CHUNK_LEN_Z;
+    @Override
+    Map<FrameTransition, ReferenceFrameShifter> getReferenceShifters() {
+        return referenceShifters;
+    }
 
-        int chunkX = x / Constants.CHUNK_LEN_X;
-        int chunkZ = z / Constants.CHUNK_LEN_Z;
+    private static Tuple<MinecraftLocation> worldToChunkReferenceShifter(MinecraftLocation instance) {
+        int blockX = instance.x % Constants.CHUNK_LEN_X;
+        int blockZ = instance.z % Constants.CHUNK_LEN_Z;
+
+        int chunkX = instance.x / Constants.CHUNK_LEN_X;
+        int chunkZ = instance.z / Constants.CHUNK_LEN_Z;
 
         return new Tuple<>(
                 new BlockLocation(blockX, blockZ, ReferenceFrame.CHUNK),

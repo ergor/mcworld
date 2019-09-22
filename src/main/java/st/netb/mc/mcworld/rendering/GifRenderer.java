@@ -50,14 +50,14 @@ public class GifRenderer implements Renderer {
 
         RegionLocation lowerBound = getBound(
                 locationMap.values(),
-                (result, element) -> element.x < result.x || element.z < result.z);
+                (result, element) -> element.getX() < result.getX() || element.getZ() < result.getZ());
 
         RegionLocation upperBound = getBound(
                 locationMap.values(),
-                (result, element) -> element.x > result.x || element.z > result.z);
+                (result, element) -> element.getX() > result.getX() || element.getZ() > result.getZ());
         {
-            int width = REGION_PIXEL_WIDTH * (1 + (upperBound.x - lowerBound.x));
-            int height = REGION_PIXEL_HEIGHT * (1 + (upperBound.z - lowerBound.z));
+            int width = REGION_PIXEL_WIDTH * (1 + (upperBound.getX() - lowerBound.getX()));
+            int height = REGION_PIXEL_HEIGHT * (1 + (upperBound.getZ() - lowerBound.getZ()));
 
             bufferedImage = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
 
@@ -85,8 +85,8 @@ public class GifRenderer implements Renderer {
     private void writeRegionToRaster(RegionHeightmap region,
                                      RegionLocation lowerBound) {
 
-        int xOffset = REGION_PIXEL_WIDTH * (region.getLocation().x - lowerBound.x);
-        int zOffset = REGION_PIXEL_HEIGHT * (region.getLocation().z - lowerBound.z);
+        int xOffset = REGION_PIXEL_WIDTH * (region.getLocation().getX() - lowerBound.getX());
+        int zOffset = REGION_PIXEL_HEIGHT * (region.getLocation().getZ() - lowerBound.getZ());
 
         for (int z = 0; z < REGION_PIXEL_HEIGHT; z++) {
             for (int x = 0; x < REGION_PIXEL_WIDTH; x++) {
