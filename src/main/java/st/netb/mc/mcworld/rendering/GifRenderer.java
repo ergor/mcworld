@@ -85,14 +85,14 @@ public class GifRenderer implements Renderer {
     private void writeRegionToRaster(RegionHeightmap region,
                                      RegionLocation lowerBound) {
 
-        int widthOffset = REGION_PIXEL_WIDTH * (region.getLocation().x - lowerBound.x);
-        int heightOffset = REGION_PIXEL_HEIGHT * (region.getLocation().z - lowerBound.z);
+        int xOffset = REGION_PIXEL_WIDTH * (region.getLocation().x - lowerBound.x);
+        int zOffset = REGION_PIXEL_HEIGHT * (region.getLocation().z - lowerBound.z);
 
         for (int z = 0; z < REGION_PIXEL_HEIGHT; z++) {
             for (int x = 0; x < REGION_PIXEL_WIDTH; x++) {
                 writableRaster.setPixel(
-                        widthOffset + x,
-                        heightOffset + z,
+                        xOffset + x,
+                        zOffset + z,
                         new int[] { region.getHeight(x, z) });
             }
         }
