@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import net.querz.nbt.mca.Chunk;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
@@ -67,6 +68,8 @@ public class Main {
         System.out.println("rendering GIF...");
         GifRenderer gif = new GifRenderer(temporaryDir, new File("out"));
         gif.render();
+
+        net.querz.nbt.mca.Chunk chunk = Chunk.newChunk();
 
         System.out.println("done");
     }
