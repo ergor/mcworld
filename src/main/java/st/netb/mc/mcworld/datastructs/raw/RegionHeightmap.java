@@ -10,7 +10,7 @@ public class RegionHeightmap {
 
     public static final int DATA_SZ = ChunkHeightmap.DATA_SZ * Constants.REGION_LEN_X * Constants.REGION_LEN_Z;
 
-    //int[] data = new int[DATA_SZ];
+    RegionLocation location;
     ChunkHeightmap[][] data = new ChunkHeightmap[Constants.REGION_LEN_Z][Constants.REGION_LEN_X];
 
     public RegionHeightmap() {
@@ -21,6 +21,8 @@ public class RegionHeightmap {
         if (data.length != DATA_SZ) {
             throw new Exception("input region data length invalid");
         }
+
+        this.location = location;
 
         for (int z = 0; z < Constants.REGION_LEN_Z; z++) {
             for (int x = 0; x < Constants.REGION_LEN_X; x++) {
@@ -57,5 +59,9 @@ public class RegionHeightmap {
         else {
             this.data[chunkLocation.z][chunkLocation.x] = chunk;
         }
+    }
+
+    public RegionLocation getLocation() {
+        return location;
     }
 }
