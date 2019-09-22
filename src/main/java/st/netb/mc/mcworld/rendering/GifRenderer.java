@@ -1,7 +1,7 @@
 package st.netb.mc.mcworld.rendering;
 
 import st.netb.mc.mcworld.Constants;
-import st.netb.mc.mcworld.coordinates.RegionLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
 import st.netb.mc.mcworld.datastructs.raw.RegionHeightmap;
 
 import javax.imageio.ImageIO;
@@ -79,7 +79,7 @@ public class GifRenderer implements Renderer {
             }
         }
 
-        renderGif("output.gif");
+        renderGif("overview.gif");
     }
 
     private void writeRegionToRaster(RegionHeightmap region,

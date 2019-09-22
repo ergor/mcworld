@@ -1,6 +1,6 @@
 package st.netb.mc.mcworld.datastructs.raw.coordinates.utm;
 
-import st.netb.mc.mcworld.coordinates.WorldGrid;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.WorldGrid;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoLocation;
 

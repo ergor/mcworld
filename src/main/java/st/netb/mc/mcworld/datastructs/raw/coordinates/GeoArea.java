@@ -1,10 +1,11 @@
 package st.netb.mc.mcworld.datastructs.raw.coordinates;
 
-import st.netb.mc.mcworld.coordinates.WorldGrid;
-
 
 /**
- * Interface for all 2D coordinate systems that is agnostic to positive and negative directions
+ * Base class for all 2D coordinate systems that is agnostic to positive and negative directions.
+ * Used as an intermediate step between the original coordinate system and the one used in rendering.
+ *
+ * @see WorldGrid
  */
 public abstract class GeoArea {
 

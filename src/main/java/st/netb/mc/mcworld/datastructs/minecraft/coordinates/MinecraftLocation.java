@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.coordinates;
+package st.netb.mc.mcworld.datastructs.minecraft.coordinates;
 
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 

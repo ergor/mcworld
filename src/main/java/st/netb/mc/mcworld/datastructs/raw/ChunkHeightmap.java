@@ -1,7 +1,7 @@
 package st.netb.mc.mcworld.datastructs.raw;
 
 import st.netb.mc.mcworld.Constants;
-import st.netb.mc.mcworld.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 
 
 public class ChunkHeightmap {

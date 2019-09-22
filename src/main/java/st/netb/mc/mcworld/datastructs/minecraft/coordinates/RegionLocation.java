@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.coordinates;
+package st.netb.mc.mcworld.datastructs.minecraft.coordinates;
 
 public class RegionLocation extends MinecraftLocation {
 

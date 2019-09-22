@@ -1,15 +1,14 @@
 package st.netb.mc.mcworld;
 
-import st.netb.mc.mcworld.coordinates.BlockLocation;
-import st.netb.mc.mcworld.coordinates.ChunkLocation;
-import st.netb.mc.mcworld.coordinates.MinecraftLocation;
-import st.netb.mc.mcworld.coordinates.WorldGrid;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.WorldGrid;
 import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
-import java.awt.*;
 import java.awt.image.Raster;
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.coordinates;
+package st.netb.mc.mcworld.datastructs.raw.coordinates;
 
 import java.awt.geom.Rectangle2D;
 

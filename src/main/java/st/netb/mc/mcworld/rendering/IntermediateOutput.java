@@ -2,9 +2,9 @@ package st.netb.mc.mcworld.rendering;
 
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.ChunkBuilder;
-import st.netb.mc.mcworld.coordinates.ChunkLocation;
-import st.netb.mc.mcworld.coordinates.MinecraftLocation;
-import st.netb.mc.mcworld.coordinates.RegionLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 

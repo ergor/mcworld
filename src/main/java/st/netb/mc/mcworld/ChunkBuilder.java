@@ -1,8 +1,8 @@
 package st.netb.mc.mcworld;
 
 
-import st.netb.mc.mcworld.coordinates.BlockLocation;
-import st.netb.mc.mcworld.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 
 import java.util.HashMap;
