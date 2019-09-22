@@ -62,7 +62,7 @@ public abstract class MinecraftLocation {
 
     @Override
     public String toString() {
-        return "(" + x + ", " + z + ")";
+        return "(" + x + ", " + z + ") $" + referenceFrame.toString();
     }
 
 

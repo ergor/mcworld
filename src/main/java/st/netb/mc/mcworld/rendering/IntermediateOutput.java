@@ -80,7 +80,7 @@ public class IntermediateOutput {
                         * Constants.REGION_LEN_X
                         * Constants.REGION_LEN_Z);
 
-                int offset = (chunkLocation.z * Constants.REGION_LEN_X * chunkData.length)
+                int offset = (chunkLocation.z * Constants.REGION_LEN_Z * chunkData.length)
                         + (chunkLocation.x * chunkData.length);
 
                 raf.seek(offset);

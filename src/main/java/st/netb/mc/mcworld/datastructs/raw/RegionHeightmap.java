@@ -26,7 +26,7 @@ public class RegionHeightmap {
             for (int x = 0; x < Constants.REGION_LEN_X; x++) {
 
                 ChunkLocation chunkLocation = new ChunkLocation(x, z, ReferenceFrame.REGION);
-                int bufPtr = ((Constants.CHUNK_LEN_Z * z) + x) * ChunkHeightmap.DATA_SZ;
+                int bufPtr = ((Constants.REGION_LEN_Z * z) + x) * ChunkHeightmap.DATA_SZ;
 
                 ChunkHeightmap chunk = new ChunkHeightmap(
                         chunkLocation,
