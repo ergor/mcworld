@@ -53,6 +53,11 @@ public class RegionHeightmap {
                         blockLocation.getZ(ReferenceFrame.CHUNK));
     }
 
+    public ChunkHeightmap getChunk(ChunkLocation chunkLocation) {
+        return this.data[chunkLocation.getZ(ReferenceFrame.REGION)]
+                        [chunkLocation.getX(ReferenceFrame.REGION)];
+    }
+
     public void insertChunk(ChunkHeightmap chunk) {
         ChunkLocation chunkLocation = chunk.getLocation();
 

@@ -17,6 +17,7 @@ import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datasource.FileType;
 import st.netb.mc.mcworld.datasource.DataSource;
+import st.netb.mc.mcworld.rendering.AnvilRenderer;
 import st.netb.mc.mcworld.rendering.GifRenderer;
 import st.netb.mc.mcworld.rendering.IntermediateOutput;
 
@@ -69,7 +70,9 @@ public class Main {
         GifRenderer gif = new GifRenderer(temporaryDir, new File("out"));
         gif.render();
 
-        net.querz.nbt.mca.Chunk chunk = Chunk.newChunk();
+        System.out.println("rendering minecraft world...");
+        AnvilRenderer anvilRenderer = new AnvilRenderer(temporaryDir, new File("anvil"));
+        anvilRenderer.render();
 
         System.out.println("done");
     }

@@ -3,6 +3,7 @@ package st.netb.mc.mcworld.rendering;
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
 import st.netb.mc.mcworld.datastructs.raw.RegionHeightmap;
+import st.netb.mc.mcworld.datastructs.raw.Tuple;
 
 import javax.imageio.ImageIO;
 
@@ -15,11 +16,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.List;
 import java.util.function.BiFunction;
-import java.util.regex.Matcher;
 
-public class GifRenderer implements Renderer {
+public class GifRenderer extends Renderer {
 
     private File intermediateDir;
     private File outputDir;
@@ -44,17 +43,13 @@ public class GifRenderer implements Renderer {
             }
         }
 
-        List<File> intermediateFiles = Arrays.asList(intermediateDir.listFiles());
+        Map<File, RegionLocation> regionLocationMap = mapToRegions(
+                Arrays.asList(intermediateDir.listFiles()));
 
-        Map<File, RegionLocation> locationMap = locationMap(intermediateFiles);
+        Tuple<RegionLocation> bounds = getBounds(regionLocationMap);
+        RegionLocation lowerBound = bounds.first();
+        RegionLocation upperBound = bounds.second();
 
-        RegionLocation lowerBound = getBound(
-                locationMap.values(),
-                (result, element) -> element.getX() < result.getX() || element.getZ() < result.getZ());
-
-        RegionLocation upperBound = getBound(
-                locationMap.values(),
-                (result, element) -> element.getX() > result.getX() || element.getZ() > result.getZ());
         {
             int width = REGION_PIXEL_WIDTH * (1 + (upperBound.getX() - lowerBound.getX()));
             int height = REGION_PIXEL_HEIGHT * (1 + (upperBound.getZ() - lowerBound.getZ()));
@@ -66,10 +61,10 @@ public class GifRenderer implements Renderer {
                     new Point(0, 0));
         }
 
-        for (File file : locationMap.keySet()) {
+        for (File file : regionLocationMap.keySet()) {
             try {
                 RegionHeightmap region = new RegionHeightmap(
-                        locationMap.get(file),
+                        regionLocationMap.get(file),
                         Files.readAllBytes(file.toPath()));
 
                 writeRegionToRaster(region, lowerBound);
@@ -110,28 +105,6 @@ public class GifRenderer implements Renderer {
         }
     }
 
-    private Map<File, RegionLocation> locationMap(List<File> intermediateFiles) {
-
-        Map<File, RegionLocation> map = new HashMap<>();
-
-        for (File file : intermediateFiles) {
-
-            Matcher matcher = IntermediateOutput.tempFilePattern.matcher(file.getName());
-            if (matcher.find()) {
-                RegionLocation regionLocation = new RegionLocation(
-                        Integer.parseInt(matcher.group(2)),
-                        Integer.parseInt(matcher.group(1)));
-
-                map.put(file, regionLocation);
-            }
-            else {
-                System.out.println(file.getName() + ": illegal file name");
-            }
-        }
-
-        return map;
-    }
-
     /**
      *
      * @param locations The list of locations.
@@ -144,6 +117,21 @@ public class GifRenderer implements Renderer {
                                     BiFunction<RegionLocation, RegionLocation, Boolean> predicate) {
         return locations.stream()
                 .reduce((result, element) -> predicate.apply(result, element) ? element : result)
-                .orElseThrow(() -> new RuntimeException("GifRenderer: could not get bounds of locations"));
+                .orElseThrow(() -> new RuntimeException("Renderer: could not get bounds of locations"));
+    }
+
+    /**
+     * Makes a tuple of (in order) the lower and upper bounds of the map
+     */
+    Tuple<RegionLocation> getBounds(Map<File, RegionLocation> regionLocationMap) {
+        RegionLocation lowerBound = getBound(
+                regionLocationMap.values(),
+                (result, element) -> element.getX() < result.getX() || element.getZ() < result.getZ());
+
+        RegionLocation upperBound = getBound(
+                regionLocationMap.values(),
+                (result, element) -> element.getX() > result.getX() || element.getZ() > result.getZ());
+
+        return new Tuple<>(lowerBound, upperBound);
     }
 }
