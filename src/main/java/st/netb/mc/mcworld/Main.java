@@ -71,6 +71,9 @@ public class Main {
                 System.out.println("rendered " + completeChunks.size() + " chunks, " + intersectingChunks.size() + " on hold");
             }
         }
+        else {
+            System.out.println("Warning: -f was specified. Will only re-render based on existing processed data");
+        }
 
         System.out.println("rendering GIF...");
         GifRenderer gif = new GifRenderer(temporaryDir, new File("out"));
