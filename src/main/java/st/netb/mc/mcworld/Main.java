@@ -2,11 +2,14 @@
 package st.netb.mc.mcworld;
 
 import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.querz.nbt.mca.Chunk;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
@@ -26,7 +29,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        World world = getWorld(FileType.SOSI, Paths.get("data", "dtm"));
+        World world = getWorld(FileType.SOSI, new File(args[0]).toPath());
+        boolean fastRender = Arrays.asList(args).contains("-f");
 
         UTMArea testArea = new UTMArea(
                 new UTMLocation(6430815, 406399),
@@ -40,30 +44,32 @@ public class Main {
 
         File temporaryDir = new File("tmp");
 
-        IntermediateOutput ioWriter = new IntermediateOutput(temporaryDir);
+        if (!fastRender) {
+            IntermediateOutput ioWriter = new IntermediateOutput(temporaryDir);
 
-        for (WorldSection worldSection : worldSections) {
-            Tuple<List<ChunkBuilder>> chunkBuilders =
-                    WorldMapper.toChunkBuilders(world, worldSection, incompleteChunks);
+            for (WorldSection worldSection : worldSections) {
+                Tuple<List<ChunkBuilder>> chunkBuilders =
+                        WorldMapper.toChunkBuilders(world, worldSection, incompleteChunks);
 
-            List<ChunkBuilder> completeChunks = chunkBuilders.first();
-            List<ChunkBuilder> intersectingChunks = chunkBuilders.second();
+                List<ChunkBuilder> completeChunks = chunkBuilders.first();
+                List<ChunkBuilder> intersectingChunks = chunkBuilders.second();
 
-            List<ChunkBuilder> updatedChunks = incompleteChunks.values().stream()
-                    .filter(ChunkBuilder::isComplete)
-                    .collect(Collectors.toList());
+                List<ChunkBuilder> updatedChunks = incompleteChunks.values().stream()
+                        .filter(ChunkBuilder::isComplete)
+                        .collect(Collectors.toList());
 
-            updatedChunks.forEach(cs -> {
-                completeChunks.add(cs);
-                incompleteChunks.remove(cs.getChunkLocation());
-            });
+                updatedChunks.forEach(cs -> {
+                    completeChunks.add(cs);
+                    incompleteChunks.remove(cs.getChunkLocation());
+                });
 
-            intersectingChunks.forEach(cs ->
-                    incompleteChunks.put(cs.getChunkLocation(), cs));
+                intersectingChunks.forEach(cs ->
+                        incompleteChunks.put(cs.getChunkLocation(), cs));
 
-            ioWriter.writeFiles(completeChunks);
+                ioWriter.writeFiles(completeChunks);
 
-            System.out.println("rendered " + completeChunks.size() + " chunks, " + intersectingChunks.size() + " on hold");
+                System.out.println("rendered " + completeChunks.size() + " chunks, " + intersectingChunks.size() + " on hold");
+            }
         }
 
         System.out.println("rendering GIF...");

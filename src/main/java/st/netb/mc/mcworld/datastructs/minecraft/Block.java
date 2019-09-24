@@ -1,33 +1,40 @@
 package st.netb.mc.mcworld.datastructs.minecraft;
 
-import st.netb.mc.mcworld.math.Point3D;
+import net.querz.nbt.CompoundTag;
 
-public class Block {
+public class Block extends CompoundTag {
 
-    /**
-     * Like in minecraft, the X and Z coordinates are east/west
-     * and north/south, while Y is height
-     */
-    private Point3D location;
+    public enum BlockId {
+        STONE_BLOCK("stone"),
+        GRASS_BLOCK("grass_block"),
+        WATER_BLOCK("water");
 
-    public Block(Point3D location) {
-        this.location = location;
+        String namespacedId;
+        BlockId(String unNamespacedId) {
+            this.namespacedId = "minecraft:" + unNamespacedId;
+        }
     }
 
-    /**
-     * Create block from 2D heightmap
-     *
-     * @param height the height
-     * @param x location on east/west axis
-     * @param y location on north/south axis
-     *
-     * @return the block
-     */
-    public static Block create(float height, int x, int y) {
-        return new Block(new Point3D(x, Math.round(height), y));
+    private Block(BlockId blockId) {
+        super();
+        this.putString("Name", blockId.namespacedId);
     }
 
-    public Point3D getLocation() {
-        return location;
+    public static class Grass extends Block {
+        public Grass() {
+            super(BlockId.GRASS_BLOCK);
+        }
+    }
+
+    public static class Stone extends Block {
+        public Stone() {
+            super(BlockId.STONE_BLOCK);
+        }
+    }
+
+    public static class StillWater extends Block {
+        public StillWater() {
+            super(BlockId.WATER_BLOCK);
+        }
     }
 }
