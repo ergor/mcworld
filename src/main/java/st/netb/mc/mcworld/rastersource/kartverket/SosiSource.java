@@ -1,8 +1,9 @@
-package st.netb.mc.mcworld.datasource;
+package st.netb.mc.mcworld.rastersource.kartverket;
 
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMArea;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
+import st.netb.mc.mcworld.rastersource.RasterSource;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class SosiFormat implements DataSource {
+public class SosiSource implements RasterSource {
 
     private List<SosiFile> files;
     private List<WorldSection> worldSections;
@@ -24,7 +25,7 @@ public class SosiFormat implements DataSource {
     private static final Pattern coordsPattern = Pattern.compile("\\.\\.NØ\\s+(\\d+)\\s(\\d+)\\s+(\\d+)\\s(\\d+)");
     private static final Pattern imageFilePattern = Pattern.compile("\\.\\.\\.BILDE-FIL \"(.+)\"");
 
-    public SosiFormat(List<File> files) {
+    public SosiSource(List<File> files) {
         this.files = files.stream()
                 .map(SosiFile::new)
                 .collect(Collectors.toList());
@@ -37,7 +38,7 @@ public class SosiFormat implements DataSource {
             worldSections = new ArrayList<>(files.size());
             for (SosiFile file : files) {
                 WorldSection<UTMArea> worldSection = new WorldSection<>(
-                        () -> DataSource.readImage(file.imageFilePath),
+                        () -> RasterSource.readImage(file.imageFilePath),
                         file.resolution,
                         new UTMArea(
                                 new UTMLocation(file.northingMin, file.eastingMin),

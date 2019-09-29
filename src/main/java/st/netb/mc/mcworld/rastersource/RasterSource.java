@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.datasource;
+package st.netb.mc.mcworld.rastersource;
 
 import com.sun.media.jai.codec.ByteArraySeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
@@ -14,12 +14,12 @@ import java.nio.file.Path;
 import java.util.List;
 
 
-public interface DataSource {
+public interface RasterSource {
 
     List<WorldSection> getWorldSections();
 
-    static DataSource getInstance(FileType fileType, List<File> dataSourceFiles) {
-        return fileType.initializer.apply(dataSourceFiles);
+    static RasterSource getInstance(FileType fileType, List<File> dataSourceFiles) {
+        return fileType.constructor.apply(dataSourceFiles);
     }
 
     static Raster readImage(Path filePath) {

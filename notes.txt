@@ -42,3 +42,11 @@ it seems to pull JAI in as a dependency.
 // global_location: point3d -> local_location: point3d, chunk: point2d
 
 //System.out.println(worldSections.size());
+
+
+Find mountains by doing edge detect. for each block, if sum of values surrounding
+it is large enough, then it should be stone instead of grass.
+good at detecting any edge:
+    https://gitlab.gnome.org/GNOME/gegl/blob/master/operations/common/image-gradient.c
+also seems sensitive to rate of change:
+    https://gitlab.gnome.org/GNOME/gegl/blob/master/operations/common/edge-sobel.c

@@ -18,15 +18,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-public class AnvilRenderer extends Renderer {
+public class TerrainRenderer extends Renderer {
 
     private static final int SEA_LEVEL = 10;
 
     private final File intermediateDir;
     private final File outputDir;
 
-    public AnvilRenderer(File intermediateDir, File outputDir) {
+    public TerrainRenderer(File intermediateDir, File outputDir) {
         this.intermediateDir = intermediateDir;
         this.outputDir = outputDir;
     }
@@ -40,13 +41,15 @@ public class AnvilRenderer extends Renderer {
             }
         }
 
-        Map<File, RegionLocation> regionLocationMap = mapToRegions(
+        Map<File, RegionLocation> fileToLocationMap = mapToRegions(
                 Arrays.asList(intermediateDir.listFiles()));
+        Map<RegionLocation, File> locationToFileMap = fileToLocationMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getValue, Map.Entry::getKey));
 
-        for (File file : regionLocationMap.keySet()) {
+        for (File file : fileToLocationMap.keySet()) {
             try {
                 RegionHeightmap region = new RegionHeightmap(
-                        regionLocationMap.get(file),
+                        fileToLocationMap.get(file),
                         Files.readAllBytes(file.toPath()));
 
                 renderRegion(region);

@@ -2,25 +2,20 @@
 package st.netb.mc.mcworld;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import net.querz.nbt.mca.Chunk;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMArea;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
-import st.netb.mc.mcworld.datasource.FileType;
-import st.netb.mc.mcworld.datasource.DataSource;
-import st.netb.mc.mcworld.rendering.AnvilRenderer;
+import st.netb.mc.mcworld.rastersource.FileType;
+import st.netb.mc.mcworld.rastersource.RasterSource;
+import st.netb.mc.mcworld.rendering.TerrainRenderer;
 import st.netb.mc.mcworld.rendering.GifRenderer;
 import st.netb.mc.mcworld.rendering.IntermediateOutput;
 
@@ -68,7 +63,7 @@ public class Main {
 
                 ioWriter.writeFiles(completeChunks);
 
-                System.out.println("rendered " + completeChunks.size() + " chunks, " + intersectingChunks.size() + " on hold");
+                System.out.println("processed " + completeChunks.size() + " chunks, " + intersectingChunks.size() + " on hold");
             }
         }
         else {
@@ -80,8 +75,8 @@ public class Main {
         gif.render();
 
         System.out.println("rendering minecraft world...");
-        AnvilRenderer anvilRenderer = new AnvilRenderer(temporaryDir, new File("anvil"));
-        anvilRenderer.render();
+        TerrainRenderer terrainRenderer = new TerrainRenderer(temporaryDir, new File("anvil"));
+        terrainRenderer.render();
 
         System.out.println("done");
     }
@@ -94,8 +89,8 @@ public class Main {
                 .sorted()
                 .collect(Collectors.toList());
 
-        DataSource dataSource = DataSource.getInstance(dataFileType, dataSourceFiles);
+        RasterSource rasterSource = RasterSource.getInstance(dataFileType, dataSourceFiles);
 
-        return new World(dataSource.getWorldSections());
+        return new World(rasterSource.getWorldSections());
     }
 }
