@@ -1,40 +1,59 @@
 package st.netb.mc.mcworld.datastructs.raw.coordinates;
 
 
+import java.awt.geom.Rectangle2D;
+
 /**
  * Base class for all 2D coordinate systems that is agnostic to positive and negative directions.
  * Used as an intermediate step between the original coordinate system and the one used in rendering.
  *
  * @see WorldGrid
  */
-public abstract class GeoArea {
+public class GeoArea {
 
-    public abstract double getWidth();
-    public abstract double getHeight();
-    public abstract GeoLocation getMinCoords();
-    public abstract GeoLocation getMaxCoords();
-    public abstract GeoArea makeContainer(GeoArea otherArea);
+    CoordinateSystem coordinateSystem;
+    Coordinate topLeft;
+    Coordinate bottomRight;
+    Coordinate minimum;
+    Coordinate maximum;
 
-    protected abstract WorldGrid asSubGridOf(GeoArea container);
+    private GeoArea() {
 
-    public static WorldGrid toWorldGrid(GeoArea area) {
-        return new WorldGrid(
-                0,
-                0,
-                area.getHeight(),
-                area.getWidth()
-        );
     }
 
-    public static WorldGrid toWorldGrid(GeoArea area, GeoArea subArea) {
-        return subArea.asSubGridOf(area);
+    public static GeoArea create(CoordinateSystem coordinateSystem, Coordinate minimum, Coordinate maximum) {
+        GeoArea geoArea = new GeoArea();
+        geoArea.coordinateSystem = coordinateSystem;
+        geoArea.topLeft = topLeft;
+        geoArea.bottomRight = bottomRight;
+        geoArea.minimum = minimum;
+        geoArea.maximum = maximum;
+
     }
 
-    public boolean contains(GeoArea area) {
-        return this.getMinCoords().x <= area.getMinCoords().x
-                && this.getMaxCoords().x >= area.getMaxCoords().x
-                && this.getMinCoords().y <= area.getMinCoords().y
-                && this.getMaxCoords().y >= area.getMaxCoords().y;
+    public Coordinate getMinCoords() {
+        return minimum;
+    }
+    public Coordinate getMaxCoords() {
+        return maximum;
+    }
+
+    public double getHeight() {
+        return bottomRight.y - topLeft.y;
+    }
+
+    public double getWidth() {
+        return bottomRight.x - topLeft.x;
+    }
+
+    public GeoArea makeContainer(GeoArea otherArea) {
+        double minX = Math.min(minimum.x, otherArea.minimum.x);
+        double minY = Math.min(minimum.y, otherArea.minimum.y);
+
+        double maxX = Math.max(maximum.x, otherArea.maximum.x);
+        double maxY = Math.max(maximum.y, otherArea.maximum.y);
+
+        return coordinateSystem.transform(new Coordinate(minX, minY), new Coordinate(maxX, maxY));
     }
 
     @Override

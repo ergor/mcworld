@@ -4,9 +4,8 @@ import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.WorldGrid;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.Coordinate;
 import st.netb.mc.mcworld.datastructs.raw.World;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
@@ -31,7 +30,8 @@ public class WorldMapper {
             WorldSection worldSection,
             Map<ChunkLocation, ChunkBuilder> incompleteChunks) {
 
-        WorldGrid localGrid = GeoArea.toWorldGrid(world.getArea(), worldSection.getArea());
+        Coordinate worldOrigin = world.getArea().getMinCoords();
+        Coordinate sectionOrigin = worldSection.getArea().getMinCoords();
 
         Raster raster = worldSection.getRaster();
 
@@ -39,16 +39,13 @@ public class WorldMapper {
 
         for (int pixelY = 0; pixelY < raster.getHeight(); pixelY++) {
             for (int pixelX = 0; pixelX < raster.getWidth(); pixelX++) {
-                //Point pixel = new Point(x, y);
 
-                //Tuple<Point> tuple = toChunkLocation(globalArea, worldSection, pixel);
-
-                double x = (double) pixelX * worldSection.getResolution();
-                double y = (double) pixelY * worldSection.getResolution();
+                double blockX = (double) pixelX * worldSection.getResX();
+                double blockY = (double) pixelY * worldSection.getResY();
 
                 Tuple<MinecraftLocation> locationTuple = new BlockLocation(
-                        (int)(x + localGrid.x),
-                        (int)(y + localGrid.y))
+                        (int)((blockX + sectionOrigin.x) - worldOrigin.x),
+                        (int)((blockY + sectionOrigin.y) - worldOrigin.y))
                         .tryReferencedTo(ReferenceFrame.CHUNK);
 
                 BlockLocation blockLocation = (BlockLocation) locationTuple.first();

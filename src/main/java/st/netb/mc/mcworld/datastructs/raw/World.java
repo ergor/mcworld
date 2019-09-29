@@ -4,7 +4,6 @@ import st.netb.mc.mcworld.LazyGet;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class World {
 
@@ -12,8 +11,8 @@ public class World {
 
     private LazyGet<GeoArea> area = new LazyGet<>(
             () -> worldSections.stream()
-                    .map((Function<WorldSection, GeoArea>) WorldSection::getArea)
-                    .reduce(GeoArea::makeContainer)
+                    .map(WorldSection::getArea)
+                    .reduce((result, element) -> result.makeContainer(element))
                     .orElseThrow(() -> new RuntimeException("error while processing world sections"))
     );
 

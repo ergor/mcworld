@@ -1,8 +1,8 @@
 package st.netb.mc.mcworld.datasource;
 
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMArea;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.CoordinateSystem;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.Coordinate;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,12 +36,13 @@ public class SosiFormat implements DataSource {
         if (worldSections == null) {
             worldSections = new ArrayList<>(files.size());
             for (SosiFile file : files) {
-                WorldSection<UTMArea> worldSection = new WorldSection<>(
+                WorldSection worldSection = new WorldSection(
                         () -> DataSource.readImage(file.imageFilePath),
-                        file.resolution,
-                        new UTMArea(
-                                new UTMLocation(file.northingMin, file.eastingMin),
-                                new UTMLocation(file.northingMax, file.eastingMax)));
+                        file.resX,
+                        file.resY,
+                        file.coordinateSystem.transform(
+                                new Coordinate(file.eastingMin, file.northingMin),
+                                new Coordinate(file.eastingMax, file.northingMax)));
                 worldSections.add(worldSection);
             }
         }
@@ -58,11 +59,13 @@ public class SosiFormat implements DataSource {
 
     private static class SosiFile {
 
+        private CoordinateSystem coordinateSystem = CoordinateSystem.UTM_NORTH;
         private double northingMin;
         private double eastingMin;
         private double northingMax;
         private double eastingMax;
-        private double resolution;
+        private double resX;
+        private double resY;
         private Path imageFilePath;
 
         SosiFile(File file) {
@@ -82,16 +85,8 @@ public class SosiFormat implements DataSource {
             coordsMatcher.find();
             imageFileMatcher.find();
 
-            {
-                float xRes = Float.parseFloat(resolutionMatcher.group(1));
-                float yRes = Float.parseFloat(resolutionMatcher.group(2));
-
-                if (xRes != yRes) {
-                    throw new RuntimeException("x and y resolution must be same");
-                }
-
-                this.resolution = xRes;
-            }
+            this.resX = Float.parseFloat(resolutionMatcher.group(1));
+            this.resY = Float.parseFloat(resolutionMatcher.group(2));
 
             this.northingMin = fromFixed(coordsMatcher.group(1));
             this.eastingMin = fromFixed(coordsMatcher.group(2));
