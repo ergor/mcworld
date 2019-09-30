@@ -28,7 +28,8 @@ public class Main {
         World world = getWorld(FileType.SOSI, new File(args[0]).toPath());
         boolean fastRender = Arrays.asList(args).contains("-f");
 
-        GeoArea testArea = CoordinateSystem.UTM_NORTH.transform(
+        GeoArea testArea = new GeoArea(
+                CoordinateSystem.UTM_NORTH,
                 new Coordinate(406399, 6430815),
                 new Coordinate(410102, 6434580));
 

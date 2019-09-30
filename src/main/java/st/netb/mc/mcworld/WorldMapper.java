@@ -30,8 +30,10 @@ public class WorldMapper {
             WorldSection worldSection,
             Map<ChunkLocation, ChunkBuilder> incompleteChunks) {
 
-        Coordinate worldOrigin = world.getArea().getMinCoords();
-        Coordinate sectionOrigin = worldSection.getArea().getMinCoords();
+        Coordinate worldOrigin = world.getArea().getOrigin();
+        Coordinate sectionOrigin = worldSection.getArea().getOrigin();
+        double resX = worldSection.getResX();
+        double resY = worldSection.getResY();
 
         Raster raster = worldSection.getRaster();
 
@@ -40,12 +42,33 @@ public class WorldMapper {
         for (int pixelY = 0; pixelY < raster.getHeight(); pixelY++) {
             for (int pixelX = 0; pixelX < raster.getWidth(); pixelX++) {
 
-                double blockX = (double) pixelX * worldSection.getResX();
-                double blockY = (double) pixelY * worldSection.getResY();
+                /* equations derived from: https://en.wikipedia.org/wiki/World_file
+                 *
+                 * X_coord = X_distance_units_per_pixel * X_pixel + X_coord_top_left_corner
+                 * (same for Y)
+                 *
+                 * X_pixel = (X_coord - X_coord_top_left_corner) / X_distance_units_per_pixel
+                 * (same for Y)
+                 */
 
+                // Get the X and Y coordinates this pixel represents:
+                double xCoord = (pixelX * resX) + sectionOrigin.x;
+                double yCoord = (pixelY * resY) + sectionOrigin.y;
+
+                // Now find what pixel that would be if we treat the whole world as one image:
+                double worldPixelX = (xCoord - worldOrigin.x) / resX;
+                double worldPixelY = (yCoord - worldOrigin.y) / resY;
+
+                /* Now scale such that 1 pixel == 1 block.
+                 * Because 1 block = 1x1 m, we need to scale by the distance_units_per_pixel factor
+                 * again. It could be done all at once in the step above, but this way it's clearer
+                 * what we are doing.
+                 * Since we have already scaled by the factor above, we need to take the absolute value
+                 * this time so we don't end up with negative positions.
+                 */
                 Tuple<MinecraftLocation> locationTuple = new BlockLocation(
-                        (int)((blockX + sectionOrigin.x) - worldOrigin.x),
-                        (int)((blockY + sectionOrigin.y) - worldOrigin.y))
+                        (int) (worldPixelX * Math.abs(resX)),
+                        (int) (worldPixelY * Math.abs(resY)))
                         .tryReferencedTo(ReferenceFrame.CHUNK);
 
                 BlockLocation blockLocation = (BlockLocation) locationTuple.first();

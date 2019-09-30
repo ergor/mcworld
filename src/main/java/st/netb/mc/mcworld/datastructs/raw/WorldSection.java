@@ -9,8 +9,8 @@ import java.util.function.Supplier;
 public class WorldSection {
 
     private Supplier<Raster> rasterSupplier; // save memory by not loading every raster all at once
-    private double resX; // meters per pixel, can be negative
-    private double resY; // meters per pixel, can be negative
+    private double resX; // distance unit per pixel, can be negative
+    private double resY; // distance unit per pixel, can be negative
     private GeoArea area;
 
     public WorldSection(Supplier<Raster> rasterSupplier, double resX, double resY, GeoArea area) {

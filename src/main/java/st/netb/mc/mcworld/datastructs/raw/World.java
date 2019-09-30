@@ -12,7 +12,7 @@ public class World {
     private LazyGet<GeoArea> area = new LazyGet<>(
             () -> worldSections.stream()
                     .map(WorldSection::getArea)
-                    .reduce((result, element) -> result.makeContainer(element))
+                    .reduce(GeoArea::makeContainer)
                     .orElseThrow(() -> new RuntimeException("error while processing world sections"))
     );
 

@@ -3,6 +3,7 @@ package st.netb.mc.mcworld.datasource;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.CoordinateSystem;
 import st.netb.mc.mcworld.datastructs.raw.coordinates.Coordinate;
+import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,7 +41,8 @@ public class SosiFormat implements DataSource {
                         () -> DataSource.readImage(file.imageFilePath),
                         file.resX,
                         file.resY,
-                        file.coordinateSystem.transform(
+                        new GeoArea(
+                                file.coordinateSystem,
                                 new Coordinate(file.eastingMin, file.northingMin),
                                 new Coordinate(file.eastingMax, file.northingMax)));
                 worldSections.add(worldSection);
@@ -59,7 +61,7 @@ public class SosiFormat implements DataSource {
 
     private static class SosiFile {
 
-        private CoordinateSystem coordinateSystem = CoordinateSystem.UTM_NORTH;
+        private CoordinateSystem coordinateSystem = CoordinateSystem.UTM_NORTH; // TODO
         private double northingMin;
         private double eastingMin;
         private double northingMax;
@@ -85,8 +87,8 @@ public class SosiFormat implements DataSource {
             coordsMatcher.find();
             imageFileMatcher.find();
 
-            this.resX = Float.parseFloat(resolutionMatcher.group(1));
-            this.resY = Float.parseFloat(resolutionMatcher.group(2));
+            this.resX = coordinateSystem.signX(Float.parseFloat(resolutionMatcher.group(1)));
+            this.resY = coordinateSystem.signY(Float.parseFloat(resolutionMatcher.group(2)));
 
             this.northingMin = fromFixed(coordsMatcher.group(1));
             this.eastingMin = fromFixed(coordsMatcher.group(2));
