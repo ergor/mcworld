@@ -4,7 +4,7 @@ import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.Coordinate;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.Coordinate;
 import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;

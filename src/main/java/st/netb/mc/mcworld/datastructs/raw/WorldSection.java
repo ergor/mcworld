@@ -1,7 +1,7 @@
 package st.netb.mc.mcworld.datastructs.raw;
 
 
-import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.GeoArea;
 
 import java.awt.image.Raster;
 import java.util.function.Supplier;

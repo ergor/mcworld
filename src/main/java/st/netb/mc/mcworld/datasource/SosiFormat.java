@@ -1,9 +1,9 @@
 package st.netb.mc.mcworld.datasource;
 
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.CoordinateSystem;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.Coordinate;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.CoordinateSystem;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.Coordinate;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.GeoArea;
 
 import java.io.File;
 import java.io.IOException;

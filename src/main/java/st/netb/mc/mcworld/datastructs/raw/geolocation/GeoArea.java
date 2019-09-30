@@ -1,4 +1,4 @@
-package st.netb.mc.mcworld.datastructs.raw.coordinates;
+package st.netb.mc.mcworld.datastructs.raw.geolocation;
 
 
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
