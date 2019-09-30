@@ -61,7 +61,19 @@ public class GeoArea {
         return extent.x - origin.x;
     }
 
+    public CoordinateSystem getCoordinateSystem() {
+        return coordinateSystem;
+    }
+
     public GeoArea makeContainer(GeoArea otherArea) {
+
+        if (this.coordinateSystem != otherArea.coordinateSystem) {
+            throw new RuntimeException(String.format(
+                    "makeContainer: cannot operate on differing coordinate systems (%s vs. %s)",
+                    this.coordinateSystem,
+                    otherArea.coordinateSystem));
+        }
+
         double minX = Math.min(minimum.x, otherArea.minimum.x);
         double minY = Math.min(minimum.y, otherArea.minimum.y);
 
