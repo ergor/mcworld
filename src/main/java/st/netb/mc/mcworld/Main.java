@@ -2,24 +2,21 @@
 package st.netb.mc.mcworld;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import net.querz.nbt.mca.Chunk;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMArea;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.utm.UTMLocation;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.CoordinateSystem;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.GeoArea;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.Coordinate;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datasource.FileType;
 import st.netb.mc.mcworld.datasource.DataSource;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.GeodeticDatum;
 import st.netb.mc.mcworld.rendering.AnvilRenderer;
 import st.netb.mc.mcworld.rendering.GifRenderer;
 import st.netb.mc.mcworld.rendering.IntermediateOutput;
@@ -32,9 +29,11 @@ public class Main {
         World world = getWorld(FileType.SOSI, new File(args[0]).toPath());
         boolean fastRender = Arrays.asList(args).contains("-f");
 
-        UTMArea testArea = new UTMArea(
-                new UTMLocation(6430815, 406399),
-                new UTMLocation(6434580, 410102));
+        GeoArea testArea = new GeoArea(
+                GeodeticDatum.EUREF89,
+                CoordinateSystem.UTM32N,
+                new Coordinate(406399, 6430815),
+                new Coordinate(410102, 6434580));
 
         List<WorldSection> worldSections = world.getSections().stream()
                 .filter(ws -> testArea.contains(ws.getArea()))

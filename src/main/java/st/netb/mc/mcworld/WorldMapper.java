@@ -4,9 +4,8 @@ import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.WorldGrid;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.Coordinate;
 import st.netb.mc.mcworld.datastructs.raw.World;
-import st.netb.mc.mcworld.datastructs.raw.coordinates.GeoArea;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 
@@ -31,7 +30,10 @@ public class WorldMapper {
             WorldSection worldSection,
             Map<ChunkLocation, ChunkBuilder> incompleteChunks) {
 
-        WorldGrid localGrid = GeoArea.toWorldGrid(world.getArea(), worldSection.getArea());
+        Coordinate worldOrigin = world.getArea().getOrigin();
+        Coordinate sectionOrigin = worldSection.getArea().getOrigin();
+        double resX = worldSection.getResX();
+        double resY = worldSection.getResY();
 
         Raster raster = worldSection.getRaster();
 
@@ -39,16 +41,34 @@ public class WorldMapper {
 
         for (int pixelY = 0; pixelY < raster.getHeight(); pixelY++) {
             for (int pixelX = 0; pixelX < raster.getWidth(); pixelX++) {
-                //Point pixel = new Point(x, y);
 
-                //Tuple<Point> tuple = toChunkLocation(globalArea, worldSection, pixel);
+                /* equations derived from: https://en.wikipedia.org/wiki/World_file
+                 *
+                 * X_coord = X_distance_units_per_pixel * X_pixel + X_coord_top_left_corner
+                 * (same for Y)
+                 *
+                 * X_pixel = (X_coord - X_coord_top_left_corner) / X_distance_units_per_pixel
+                 * (same for Y)
+                 */
 
-                double x = (double) pixelX * worldSection.getResolution();
-                double y = (double) pixelY * worldSection.getResolution();
+                // Get the X and Y coordinates this pixel represents:
+                double xCoord = (pixelX * resX) + sectionOrigin.x;
+                double yCoord = (pixelY * resY) + sectionOrigin.y;
 
+                // Now find what pixel that would be if we treat the whole world as one image:
+                double worldPixelX = (xCoord - worldOrigin.x) / resX;
+                double worldPixelY = (yCoord - worldOrigin.y) / resY;
+
+                /* Now scale such that 1 pixel == 1 block.
+                 * Because 1 block = 1x1 m, we need to scale by the distance_units_per_pixel factor
+                 * again. It could be done all at once in the step above, but this way it's clearer
+                 * what we are doing.
+                 * Since we have already scaled by the factor above, we need to take the absolute value
+                 * this time so we don't end up with negative positions.
+                 */
                 Tuple<MinecraftLocation> locationTuple = new BlockLocation(
-                        (int)(x + localGrid.x),
-                        (int)(y + localGrid.y))
+                        (int) (worldPixelX * Math.abs(resX)),
+                        (int) (worldPixelY * Math.abs(resY)))
                         .tryReferencedTo(ReferenceFrame.CHUNK);
 
                 BlockLocation blockLocation = (BlockLocation) locationTuple.first();
