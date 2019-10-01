@@ -4,6 +4,7 @@ import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datastructs.raw.geolocation.CoordinateSystem;
 import st.netb.mc.mcworld.datastructs.raw.geolocation.Coordinate;
 import st.netb.mc.mcworld.datastructs.raw.geolocation.GeoArea;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.GeodeticDatum;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,6 +43,7 @@ public class SosiFormat implements DataSource {
                         file.resX,
                         file.resY,
                         new GeoArea(
+                                file.geodeticDatum,
                                 file.coordinateSystem,
                                 new Coordinate(file.eastingMin, file.northingMin),
                                 new Coordinate(file.eastingMax, file.northingMax)));
@@ -61,7 +63,8 @@ public class SosiFormat implements DataSource {
 
     private static class SosiFile {
 
-        private CoordinateSystem coordinateSystem = CoordinateSystem.UTM_NORTH; // TODO
+        private CoordinateSystem coordinateSystem = CoordinateSystem.UTM32N; // TODO
+        private GeodeticDatum geodeticDatum = GeodeticDatum.EUREF89;
         private double northingMin;
         private double eastingMin;
         private double northingMax;

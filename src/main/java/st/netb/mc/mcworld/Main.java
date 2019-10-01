@@ -16,6 +16,7 @@ import st.netb.mc.mcworld.datastructs.raw.geolocation.Coordinate;
 import st.netb.mc.mcworld.datastructs.raw.WorldSection;
 import st.netb.mc.mcworld.datasource.FileType;
 import st.netb.mc.mcworld.datasource.DataSource;
+import st.netb.mc.mcworld.datastructs.raw.geolocation.GeodeticDatum;
 import st.netb.mc.mcworld.rendering.AnvilRenderer;
 import st.netb.mc.mcworld.rendering.GifRenderer;
 import st.netb.mc.mcworld.rendering.IntermediateOutput;
@@ -29,7 +30,8 @@ public class Main {
         boolean fastRender = Arrays.asList(args).contains("-f");
 
         GeoArea testArea = new GeoArea(
-                CoordinateSystem.UTM_NORTH,
+                GeodeticDatum.EUREF89,
+                CoordinateSystem.UTM32N,
                 new Coordinate(406399, 6430815),
                 new Coordinate(410102, 6434580));
 

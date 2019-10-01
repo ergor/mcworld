@@ -18,6 +18,8 @@ import st.netb.mc.mcworld.datastructs.raw.Tuple;
  */
 public class GeoArea {
 
+    private GeodeticDatum geodeticDatum;
+
     /* Defines the relationship between minimum/maximum and origin/extent. */
     private CoordinateSystem coordinateSystem;
 
@@ -29,10 +31,14 @@ public class GeoArea {
     private Coordinate origin;
     private Coordinate extent;
 
-    public GeoArea(CoordinateSystem coordinateSystem, Coordinate minimum, Coordinate maximum) {
+    public GeoArea(GeodeticDatum geodeticDatum,
+                   CoordinateSystem coordinateSystem,
+                   Coordinate minimum,
+                   Coordinate maximum) {
         this.minimum = minimum;
         this.maximum = maximum;
 
+        this.geodeticDatum = geodeticDatum;
         this.coordinateSystem = coordinateSystem;
         Tuple<Coordinate> mappedExtrema = coordinateSystem.map(minimum, maximum);
         this.origin = mappedExtrema.first();
@@ -65,13 +71,19 @@ public class GeoArea {
         return coordinateSystem;
     }
 
+    public GeodeticDatum getGeodeticDatum() {
+        return geodeticDatum;
+    }
+
+    public boolean isSameCoordinateSystem(GeoArea otherArea) {
+        return this.coordinateSystem == otherArea.coordinateSystem
+                && this.geodeticDatum == otherArea.geodeticDatum;
+    }
+
     public GeoArea makeContainer(GeoArea otherArea) {
 
-        if (this.coordinateSystem != otherArea.coordinateSystem) {
-            throw new RuntimeException(String.format(
-                    "makeContainer: cannot operate on differing coordinate systems (%s vs. %s)",
-                    this.coordinateSystem,
-                    otherArea.coordinateSystem));
+        if (!isSameCoordinateSystem(otherArea)) {
+            throw new CoordinateSystemException(this, otherArea);
         }
 
         double minX = Math.min(minimum.x, otherArea.minimum.x);
@@ -80,10 +92,18 @@ public class GeoArea {
         double maxX = Math.max(maximum.x, otherArea.maximum.x);
         double maxY = Math.max(maximum.y, otherArea.maximum.y);
 
-        return new GeoArea(coordinateSystem, new Coordinate(minX, minY), new Coordinate(maxX, maxY));
+        return new GeoArea(geodeticDatum,
+                coordinateSystem,
+                new Coordinate(minX, minY),
+                new Coordinate(maxX, maxY));
     }
 
     public boolean contains(GeoArea otherArea) {
+
+        if (!isSameCoordinateSystem(otherArea)) {
+            throw new CoordinateSystemException(this, otherArea);
+        }
+
         return this.minimum.x <= otherArea.minimum.x
                 && this.maximum.x >= otherArea.maximum.x
                 && this.minimum.y <= otherArea.minimum.y
@@ -92,12 +112,13 @@ public class GeoArea {
 
     @Override
     public String toString() {
-        return String.format("%s, %s; w=%f, h=%f; %s",
+        return String.format("%s, %s; w=%f, h=%f; %s-%s",
                 minimum.toString(),
                 maximum.toString(),
                 getWidth(),
                 getHeight(),
-                coordinateSystem.toString());
+                geodeticDatum,
+                coordinateSystem);
     }
 }
 

@@ -10,7 +10,7 @@ import st.netb.mc.mcworld.datastructs.raw.Tuple;
  */
 public enum CoordinateSystem {
 
-    UTM_NORTH(CoordinateSystem::invertedY, 1, -1);
+    UTM32N(CoordinateSystem::invertedY, 1, -1);
 
     private CoordinatesMapper coordinatesMapper;
     private double signDirectionX;
