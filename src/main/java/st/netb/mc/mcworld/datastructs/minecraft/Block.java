@@ -20,21 +20,7 @@ public class Block extends CompoundTag {
         this.putString("Name", blockId.namespacedId);
     }
 
-    public static class Grass extends Block {
-        public Grass() {
-            super(BlockId.GRASS_BLOCK);
-        }
-    }
-
-    public static class Stone extends Block {
-        public Stone() {
-            super(BlockId.STONE_BLOCK);
-        }
-    }
-
-    public static class StillWater extends Block {
-        public StillWater() {
-            super(BlockId.WATER_BLOCK);
-        }
-    }
+    public static final Block GRASS = new Block(BlockId.GRASS_BLOCK);
+    public static final Block STONE = new Block(BlockId.STONE_BLOCK);
+    public static final Block WATER = new Block(BlockId.WATER_BLOCK);
 }

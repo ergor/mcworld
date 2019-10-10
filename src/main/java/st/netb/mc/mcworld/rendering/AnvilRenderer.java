@@ -1,6 +1,5 @@
 package st.netb.mc.mcworld.rendering;
 
-import net.querz.nbt.CompoundTag;
 import net.querz.nbt.mca.Chunk;
 import net.querz.nbt.mca.MCAFile;
 import net.querz.nbt.mca.MCAUtil;
@@ -84,10 +83,6 @@ public class AnvilRenderer extends Renderer {
 
         Chunk chunk = Chunk.newChunk();
 
-        CompoundTag grass = new Block.Grass();
-        CompoundTag stone = new Block.Stone();
-        CompoundTag water = new Block.StillWater();
-
         for (int z = 0; z < Constants.CHUNK_LEN_Z; z++) {
             for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
 
@@ -95,15 +90,15 @@ public class AnvilRenderer extends Renderer {
 
                 if (height > SEA_LEVEL) {
                     for (int i = 0; i < 2 && height >= 0; i++) {
-                        chunk.setBlockStateAt(x, height--, z, grass, false);
+                        chunk.setBlockStateAt(x, height--, z, Block.GRASS, false);
                     }
                     for (; height >= 0; height--) {
-                        chunk.setBlockStateAt(x, height, z, stone, false);
+                        chunk.setBlockStateAt(x, height, z, Block.STONE, false);
                     }
                 }
                 else {
                     for (; height >= 0; height--) {
-                        chunk.setBlockStateAt(x, height, z, water, false);
+                        chunk.setBlockStateAt(x, height, z, Block.WATER, false);
                     }
                 }
             }
