@@ -1,7 +1,7 @@
 package st.netb.mc.mcworld.rendering;
 
 import st.netb.mc.mcworld.Constants;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.MinecraftCoordinate;
 import st.netb.mc.mcworld.datastructs.raw.RegionHeightmap;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 
@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.BiFunction;
 
 public class GifRenderer extends Renderer {
 
@@ -43,7 +42,7 @@ public class GifRenderer extends Renderer {
             }
         }
 
-        Map<File, RegionLocation> regionLocationMap = mapToRegions(
+        Map<File, MinecraftCoordinate> regionLocationMap = mapToRegions(
                 Arrays.asList(intermediateDir.listFiles()));
 
         Tuple<RegionLocation> bounds = getBounds(regionLocationMap);
