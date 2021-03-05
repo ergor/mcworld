@@ -1,0 +1,10 @@
+main: st.netb.mcworld.bukkit.BukkitMain
+name: McWorld
+version: 0.1
+description: Plugin to generate real world landscape into minecraft
+load: STARTUP
+api-version: 1.16
+commands:
+  renderworld:
+    description: Rendre verden du står i
+    alias: rw

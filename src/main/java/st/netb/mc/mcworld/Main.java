@@ -85,7 +85,6 @@ public class Main {
         System.out.println("done");
     }
 
-
     private static World getWorld(FileType dataFileType, Path dataDirectory) {
 
         List<File> dataSourceFiles = Arrays.stream(dataDirectory.toFile().listFiles())
