@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import st.netb.mc.mcworld.Main;
+import st.netb.mc.mcworld.MainRenderer;
 
 /**
  * @author Alexander Sagen
@@ -16,7 +16,10 @@ public class CommandRenderWorld implements CommandExecutor {
         sender.sendMessage("§6§lStarting async thread....");
         Bukkit.getScheduler().scheduleAsyncDelayedTask(BukkitMain.getPlugin(), () -> {
             sender.sendMessage("§6§lYou called me, now prepare to be dissapointed");
-            Main.main("dtm1");
+            MainRenderer mainRenderer = new MainRenderer();
+            mainRenderer.init("oslo_laserscan_2019/data/dtm", false);
+            mainRenderer.renderGif();
+            mainRenderer.renderAnvil();
             sender.sendMessage("§&§lTask completed successfully!");
         });
         return true;

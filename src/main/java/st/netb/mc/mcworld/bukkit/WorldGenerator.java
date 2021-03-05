@@ -1,6 +1,5 @@
 package st.netb.mc.mcworld.bukkit;
 
-import org.bukkit.Chunk;
 import org.bukkit.World;
 import org.bukkit.generator.ChunkGenerator;
 
