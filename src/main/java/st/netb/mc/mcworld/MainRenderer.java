@@ -41,14 +41,14 @@ public class MainRenderer {
         GeoArea testArea = new GeoArea(
                 GeodeticDatum.EUREF89,
                 CoordinateSystem.UTM32N,
-                new Coordinate(406399, 6430815),
-                new Coordinate(410102, 6434580));
+                new Coordinate(597255, 6640726),
+                new Coordinate(601000, 6643455));
 
         Bukkit.broadcastMessage("§6§l    DEBUG - 3");
 
-        List<WorldSection> worldSections = world.getSections();//.stream()
-        //.filter(ws -> testArea.contains(ws.getArea()))
-        //.collect(Collectors.toList());
+        List<WorldSection> worldSections = world.getSections().stream()
+        .filter(ws -> testArea.contains(ws.getArea()))
+        .collect(Collectors.toList());
 
         Bukkit.broadcastMessage("§6§l    DEBUG - 4");
 
@@ -114,7 +114,7 @@ public class MainRenderer {
 
     public void renderAnvil() {
         System.out.println("rendering minecraft world...");
-        AnvilRenderer anvilRenderer = new AnvilRenderer(temporaryDir, new File("anvil"));
+        AnvilRenderer anvilRenderer = new AnvilRenderer(temporaryDir, new File("anvil/region"));
         anvilRenderer.render();
     }
 

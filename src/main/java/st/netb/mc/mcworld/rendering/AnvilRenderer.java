@@ -88,8 +88,8 @@ public class AnvilRenderer extends Renderer {
 
                 int height = (chunkHeightmap.getHeight(x, z) + SEA_LEVEL) & 0xFF;
 
-                if (height > SEA_LEVEL) {
-                    for (int i = 0; i < 2 && height >= 0; i++) {
+                if (height > SEA_LEVEL + 1) {
+                    for (int i = 0; i < 1 && height >= 0; i++) {
                         chunk.setBlockStateAt(x, height--, z, Block.GRASS, false);
                     }
                     for (; height >= 0; height--) {

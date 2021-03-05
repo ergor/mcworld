@@ -28,6 +28,8 @@ public class BukkitMain extends JavaPlugin {
     public void onEnable() {
         Bukkit.getConsoleSender().sendMessage("§6§l[Mc World] §7->    §fStarting up....");
         Objects.requireNonNull(getCommand("renderworld")).setExecutor(new CommandRenderWorld());
+        Objects.requireNonNull(getCommand("unloadchunks")).setExecutor(new CommandUnloadChunks());
+        Bukkit.getPluginManager().registerEvents(new WorldEventListener(), this);
     }
 
     @Override

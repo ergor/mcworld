@@ -1,5 +1,6 @@
 package st.netb.mc.mcworld.rendering;
 
+import org.bukkit.Bukkit;
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
 import st.netb.mc.mcworld.datastructs.raw.RegionHeightmap;
@@ -80,19 +81,38 @@ public class GifRenderer extends Renderer {
     private void writeRegionToRaster(RegionHeightmap region,
                                      RegionLocation lowerBound) {
 
-        int xOffset = REGION_PIXEL_WIDTH * (region.getLocation().getX() - lowerBound.getX());
-        int zOffset = REGION_PIXEL_HEIGHT * (region.getLocation().getZ() - lowerBound.getZ());
+//        try {
+            //File file = File.createTempFile("pixel_out_of_bounds", ".txt");
 
-        for (int z = 0; z < REGION_PIXEL_HEIGHT; z++) {
-            for (int x = 0; x < REGION_PIXEL_WIDTH; x++) {
-                writableRaster.setPixel(
-                        xOffset + x,
-                        zOffset + z,
-                        new int[] { region.getHeight(x, z) });
-            }
-        }
+            //try(Writer writer = Channels.newWriter(new FileOutputStream(file.getAbsoluteFile(), true).getChannel(), "UTF-8")) {
 
-        bufferedImage.setData(writableRaster);
+                int xOffset = REGION_PIXEL_WIDTH * (region.getLocation().getX() - lowerBound.getX());
+                int zOffset = REGION_PIXEL_HEIGHT * (region.getLocation().getZ() - lowerBound.getZ());
+
+                int eCounter = 0;
+                for (int z = 0; z < REGION_PIXEL_HEIGHT; z++) {
+                    for (int x = 0; x < REGION_PIXEL_WIDTH; x++) {
+                        try {
+                            writableRaster.setPixel(
+                                    xOffset + x,
+                                    zOffset + z,
+                                    new int[]{region.getHeight(x, z)});
+                        } catch (Exception e) {
+                            if(eCounter++ % 1000 == 0) {
+                                Bukkit.broadcastMessage(eCounter + " pixels out of bounds....");
+                            }
+                            //writer.append("Pixel out of bounds: ").append(String.valueOf(xOffset + x)).append(" - ").append(String.valueOf(zOffset + z));
+                        }
+                    }
+                }
+                bufferedImage.setData(writableRaster);
+
+                //writer.flush();
+            //}
+
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private void renderGif(String fileName) {

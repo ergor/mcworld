@@ -8,3 +8,5 @@ commands:
   renderworld:
     description: Rendre verden du står i
     alias: rw
+  unloadchunks:
+    description: Unload all chunks in world

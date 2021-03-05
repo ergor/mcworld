@@ -15,3 +15,5 @@ data
 tmp
 out
 anvil
+
+dependency-reduced-pom.xml
