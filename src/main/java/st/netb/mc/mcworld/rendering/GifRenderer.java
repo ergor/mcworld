@@ -85,10 +85,14 @@ public class GifRenderer extends Renderer {
 
         for (int z = 0; z < REGION_PIXEL_HEIGHT; z++) {
             for (int x = 0; x < REGION_PIXEL_WIDTH; x++) {
-                writableRaster.setPixel(
-                        xOffset + x,
-                        zOffset + z,
-                        new int[] { region.getHeight(x, z) });
+                try {
+                    writableRaster.setPixel(
+                            xOffset + x,
+                            zOffset + z,
+                            new int[]{region.getHeight(x, z)});
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println(String.format("WARNING: GIF pixel out of bounds: (x: %d, z: %d)", xOffset + x, zOffset + z));
+                }
             }
         }
 

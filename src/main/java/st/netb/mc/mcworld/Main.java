@@ -32,8 +32,8 @@ public class Main {
         GeoArea testArea = new GeoArea(
                 GeodeticDatum.EUREF89,
                 CoordinateSystem.UTM32N,
-                new Coordinate(406399, 6430815),
-                new Coordinate(410102, 6434580));
+                new Coordinate(597255, 6640726),
+                new Coordinate(601000, 6643455));
 
         List<WorldSection> worldSections = world.getSections().stream()
                 .filter(ws -> testArea.contains(ws.getArea()))
