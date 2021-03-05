@@ -58,7 +58,7 @@
         <repository>
             <id>netb</id>
             <name>My own repo at netb.st where I mirror/host artifacts</name>
-            <url>https://mvn.netb.st</url>
+            <url>https://mvn.netb.no</url>
         </repository>
         <repository>
             <id>osgeo</id>
