@@ -1,4 +1,4 @@
-main: st.netb.mcworld.bukkit.BukkitMain
+main: st.netb.mc.mcworld.bukkit.BukkitMain
 name: McWorld
 version: 0.1
 description: Plugin to generate real world landscape into minecraft

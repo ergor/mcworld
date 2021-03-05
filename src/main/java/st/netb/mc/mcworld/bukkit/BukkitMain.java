@@ -1,9 +1,10 @@
 package st.netb.mc.mcworld.bukkit;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
+import org.bukkit.Bukkit;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
 
 /**
  * @author Alexander Sagen
@@ -11,31 +12,31 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BukkitMain extends JavaPlugin {
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
+    private static BukkitMain plugin;
+
+    public static BukkitMain getPlugin() {
+        return plugin;
     }
 
     @Override
-    public void onDisable() {
-        super.onDisable();
+    public void onLoad() {
+        plugin = this;
+        Bukkit.getConsoleSender().sendMessage("§6§l[Mc World] §7->    §fLoading....");
     }
 
     @Override
     public void onEnable() {
-        super.onEnable();
+        Bukkit.getConsoleSender().sendMessage("§6§l[Mc World] §7->    §fStarting up....");
+        Objects.requireNonNull(getCommand("renderworld")).setExecutor(new CommandRenderWorld());
+    }
+
+    @Override
+    public void onDisable() {
+        Bukkit.getConsoleSender().sendMessage("§6§l[Mc World] §7->    §fDisabling....");
     }
 
     @Override
     public ChunkGenerator getDefaultWorldGenerator(String worldName, String id) {
         return new WorldGenerator();
-    }
-
-    @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if(command.getName().equals("renderworld")) {
-            sender.sendMessage("§6§lYou called me, now prepare to be dissapointed");
-        }
-        return true;
     }
 }
