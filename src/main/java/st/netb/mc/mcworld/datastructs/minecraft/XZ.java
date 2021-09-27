@@ -53,7 +53,7 @@ public abstract class XZ {
     }
 
     /**
-     * A pair of coordinates where 'rel' is a relative position inside 'abs',
+     * A pair of coordinates where 'rel' is a position relative to 'abs',
      * and 'abs' is an absolute position in the world.
      */
     public static class Relative<R, A> {
@@ -96,7 +96,7 @@ public abstract class XZ {
         return z;
     }
 
-    public static Relative<Void, Void> blockInRegion(Block blockInWorld) {
+    public static Relative<Block, Region> blockInRegion(Block blockInWorld) {
         throw new NotImplementedException();
     }
 
