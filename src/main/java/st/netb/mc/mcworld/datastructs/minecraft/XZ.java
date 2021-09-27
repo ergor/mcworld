@@ -31,10 +31,6 @@ public abstract class XZ {
         public Chunk(int x, int z) {
             super(x, z);
         }
-
-        public Block toBlock() {
-            return new Block(Constants.CHUNK_LEN_X * x, Constants.CHUNK_LEN_Z * z);
-        }
     }
 
     /**
@@ -45,10 +41,6 @@ public abstract class XZ {
     public static class Region extends XZ {
         public Region(int x, int z) {
             super(x, z);
-        }
-
-        public Chunk toChunk() {
-            return new Chunk(Constants.REGION_LEN_X * x, Constants.REGION_LEN_Z * z);
         }
     }
 
@@ -121,7 +113,7 @@ public abstract class XZ {
      * @param chunkInWorld the absolute coordinate of the chunk in the world
      * @return the chunk's coordinate in its region, and the coordinate of that region in the world
      */
-    private static Relative<Chunk, Region> chunkInRegion(Chunk chunkInWorld) {
+    public static Relative<Chunk, Region> chunkInRegion(Chunk chunkInWorld) {
         int chunkX = chunkInWorld.x % Constants.REGION_LEN_X;
         int chunkZ = chunkInWorld.z % Constants.REGION_LEN_Z;
 
@@ -132,6 +124,14 @@ public abstract class XZ {
                 new Chunk(chunkX, chunkZ),
                 new Region(regionX, regionZ)
         );
+    }
+
+    public static Block toBlock(Chunk chunk) {
+        return new Block(Constants.CHUNK_LEN_X * chunk.x, Constants.CHUNK_LEN_Z * chunk.z);
+    }
+
+    public static Chunk toChunk(Region region) {
+        return new Chunk(Constants.REGION_LEN_X * region.x, Constants.REGION_LEN_Z * region.z);
     }
 
     /**
