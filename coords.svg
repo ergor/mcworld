@@ -28,6 +28,10 @@
       <rect width="512"
             height="512"
             fill="url(#chunks)"/>
+      <rect width="512"
+            height="512"
+            fill="red"
+            fill-opacity="0.075"/>
     </g>
     <g id="region-2" transform="translate(512, 0)">
       <rect width="512"
@@ -36,10 +40,6 @@
       <rect width="512"
             height="512"
             fill="url(#chunks)"/>
-      <rect width="512"
-            height="512"
-            fill="red"
-            fill-opacity="0.075"/>
     </g>
     <g id="region-3" transform="translate(0, -512)">
       <rect width="512"
@@ -48,10 +48,6 @@
       <rect width="512"
             height="512"
             fill="url(#chunks)"/>
-      <rect width="512"
-            height="512"
-            fill="red"
-            fill-opacity="0.075"/>
     </g>
     <g id="region-4" transform="translate(512, -512)">
       <rect width="512"
@@ -60,16 +56,20 @@
       <rect width="512"
             height="512"
             fill="url(#chunks)"/>
+      <rect width="512"
+            height="512"
+            fill="red"
+            fill-opacity="0.075"/>
     </g>
   </g>
 
-  <text transform="translate(90, 150)" font-size="20">X</text>
+  <text transform="translate(1180, 150)" font-size="20">X</text>
   <text transform="translate(618, 664) rotate(90)" font-size="20">Z</text>
 
-  <line x1="1216" x2="64" y1="128" y2="128" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
+  <line x1="64" x2="1216" y1="128" y2="128" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
   <line x1="640" x2="640" y1="-448" y2="700" stroke="black" stroke-width="1" marker-end="url(#arrow)"/>
 
   <text transform="translate(646, 120)" font-size="15">(0, 0)</text>
-  <text transform="translate(64, 120)" font-size="15">(512, 0)</text>
+  <text transform="translate(1160, 120)" font-size="15">(512, 0)</text>
   <text transform="translate(648, 642) rotate(90)" font-size="15">(0, 512)</text>
 </svg>
