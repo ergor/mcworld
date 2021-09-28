@@ -1,7 +1,6 @@
 package st.netb.mc.mcworld.datastructs.minecraft;
 
 import st.netb.mc.mcworld.Constants;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Represents a coordinate in minecraft in the X and Z axis,
@@ -117,23 +116,12 @@ public abstract class Coord2D {
     int x; // east
     int z; // south
 
+    abstract int getX();
+    abstract int getZ();
+
     public Coord2D(int x, int z) {
         this.x = x;
         this.z = z;
-    }
-
-    /**
-     * The distance eastwards
-     */
-    abstract int getX();
-
-    /**
-     * The distance southwards
-     */
-    abstract int getZ();
-
-    public static Relative<Block, Region> blockInRegion(Block blockInWorld) {
-        throw new NotImplementedException();
     }
 
     /**
@@ -168,14 +156,6 @@ public abstract class Coord2D {
                 new Chunk(chunkX, chunkZ),
                 new Region(regionX, regionZ)
         );
-    }
-
-    public static Block toBlock(Chunk chunk) {
-        return new Block(Constants.CHUNK_LEN_X * chunk.x, Constants.CHUNK_LEN_Z * chunk.z);
-    }
-
-    public static Chunk toChunk(Region region) {
-        return new Chunk(Constants.REGION_LEN_X * region.x, Constants.REGION_LEN_Z * region.z);
     }
 
     /**
