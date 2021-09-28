@@ -1,7 +1,7 @@
 package st.netb.mc.mcworld.rendering;
 
 import st.netb.mc.mcworld.Constants;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 import st.netb.mc.mcworld.datastructs.raw.RegionHeightmap;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 
@@ -43,12 +43,12 @@ public class GifRenderer extends Renderer {
             }
         }
 
-        Map<File, RegionLocation> regionLocationMap = mapToRegions(
+        Map<File, Coord2D.Region> regionLocationMap = mapToRegions(
                 Arrays.asList(intermediateDir.listFiles()));
 
-        Tuple<RegionLocation> bounds = getBounds(regionLocationMap);
-        RegionLocation lowerBound = bounds.first();
-        RegionLocation upperBound = bounds.second();
+        Tuple<Coord2D.Region> bounds = getBounds(regionLocationMap);
+        Coord2D.Region lowerBound = bounds.first();
+        Coord2D.Region upperBound = bounds.second();
 
         {
             int width = REGION_PIXEL_WIDTH * (1 + (upperBound.getX() - lowerBound.getX()));
@@ -78,7 +78,7 @@ public class GifRenderer extends Renderer {
     }
 
     private void writeRegionToRaster(RegionHeightmap region,
-                                     RegionLocation lowerBound) {
+                                     Coord2D.Region lowerBound) {
 
         int xOffset = REGION_PIXEL_WIDTH * (region.getLocation().getX() - lowerBound.getX());
         int zOffset = REGION_PIXEL_HEIGHT * (region.getLocation().getZ() - lowerBound.getZ());
@@ -117,8 +117,8 @@ public class GifRenderer extends Renderer {
      *
      * @return The location that meets the conditions of the predicate.
      */
-    private RegionLocation getBound(Collection<RegionLocation> locations,
-                                    BiFunction<RegionLocation, RegionLocation, Boolean> predicate) {
+    private Coord2D.Region getBound(Collection<Coord2D.Region> locations,
+                                    BiFunction<Coord2D.Region, Coord2D.Region, Boolean> predicate) {
         return locations.stream()
                 .reduce((result, element) -> predicate.apply(result, element) ? element : result)
                 .orElseThrow(() -> new RuntimeException("Renderer: could not get bounds of locations"));
@@ -127,12 +127,12 @@ public class GifRenderer extends Renderer {
     /**
      * Makes a tuple of (in order) the lower and upper bounds of the map
      */
-    Tuple<RegionLocation> getBounds(Map<File, RegionLocation> regionLocationMap) {
-        RegionLocation lowerBound = getBound(
+    Tuple<Coord2D.Region> getBounds(Map<File, Coord2D.Region> regionLocationMap) {
+        Coord2D.Region lowerBound = getBound(
                 regionLocationMap.values(),
                 (result, element) -> element.getX() < result.getX() || element.getZ() < result.getZ());
 
-        RegionLocation upperBound = getBound(
+        Coord2D.Region upperBound = getBound(
                 regionLocationMap.values(),
                 (result, element) -> element.getX() > result.getX() || element.getZ() > result.getZ());
 

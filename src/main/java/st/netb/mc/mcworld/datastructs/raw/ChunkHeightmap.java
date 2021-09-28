@@ -1,7 +1,7 @@
 package st.netb.mc.mcworld.datastructs.raw;
 
 import st.netb.mc.mcworld.Constants;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 
 
 public class ChunkHeightmap {
@@ -9,9 +9,9 @@ public class ChunkHeightmap {
     public static final int DATA_SZ = Constants.CHUNK_LEN_X * Constants.CHUNK_LEN_Z;
 
     private int[][] data = new int[Constants.CHUNK_LEN_Z][Constants.CHUNK_LEN_X];
-    private ChunkLocation location;
+    private Coord2D.Chunk location;
 
-    public ChunkHeightmap(ChunkLocation location, float[][] heightmap) {
+    public ChunkHeightmap(Coord2D.Chunk location, float[][] heightmap) {
 
         this.location = location;
 
@@ -22,7 +22,7 @@ public class ChunkHeightmap {
         }
     }
 
-    public ChunkHeightmap(ChunkLocation location, byte[] rawData) {
+    public ChunkHeightmap(Coord2D.Chunk location, byte[] rawData) {
 
         this.location = location;
 
@@ -33,7 +33,7 @@ public class ChunkHeightmap {
         }
     }
 
-    public ChunkLocation getLocation() {
+    public Coord2D.Chunk getLocation() {
         return location;
     }
 

@@ -1,9 +1,7 @@
 package st.netb.mc.mcworld;
 
 
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 
 import java.util.HashMap;
@@ -11,18 +9,18 @@ import java.util.Map;
 
 public class ChunkBuilder {
 
-    private ChunkLocation chunkLocation;
+    private Coord2D.Chunk chunkLocation;
     private float[][] surface = new float[Constants.CHUNK_LEN_Z][Constants.CHUNK_LEN_X];
     // maps each location to how many times there has been value insertions
-    private Map<BlockLocation, Integer> insertions = new HashMap<>();
+    private Map<Coord2D.Block, Integer> insertions = new HashMap<>();
     private ChunkHeightmap chunkHeightmap = null;
 
 
-    public ChunkBuilder(ChunkLocation chunkLocation) {
+    public ChunkBuilder(Coord2D.Chunk chunkLocation) {
         this.chunkLocation = chunkLocation;
     }
 
-    public ChunkLocation getChunkLocation() {
+    public Coord2D.Chunk getChunkLocation() {
         return chunkLocation;
     }
 
@@ -37,9 +35,9 @@ public class ChunkBuilder {
         return !isComplete();
     }
 
-    public void insert(BlockLocation blockLocation, float height) {
+    public void insert(Coord2D.Block blockLocation, float height) {
         // add the value; we'll get the average of all additions later
-        surface[blockLocation.getZ(ReferenceFrame.CHUNK)][blockLocation.getX(ReferenceFrame.CHUNK)] += height;
+        surface[blockLocation.getZ()][blockLocation.getX()] += height;
         Integer ins = insertions.computeIfAbsent(blockLocation, key -> 0);
         insertions.put(blockLocation, ins + 1);
     }
@@ -63,7 +61,7 @@ public class ChunkBuilder {
         if (chunkHeightmap == null) {
             for (int z = 0; z < Constants.CHUNK_LEN_Z; z++) {
                 for (int x = 0; x < Constants.CHUNK_LEN_X; x++) {
-                    BlockLocation blockLocation = new BlockLocation(x, z, ReferenceFrame.CHUNK);
+                    Coord2D.Block blockLocation = new Coord2D.Block(x, z);
                     int n = insertions.get(blockLocation);
                     surface[z][x] /= n; // get average of all insertions at this location
 

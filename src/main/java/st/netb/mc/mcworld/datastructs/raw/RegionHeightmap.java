@@ -1,8 +1,7 @@
 package st.netb.mc.mcworld.datastructs.raw;
 
 import st.netb.mc.mcworld.Constants;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.*;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 
 import java.util.Arrays;
 
@@ -10,13 +9,13 @@ public class RegionHeightmap {
 
     public static final int DATA_SZ = ChunkHeightmap.DATA_SZ * Constants.REGION_LEN_X * Constants.REGION_LEN_Z;
 
-    RegionLocation location;
+    Coord2D.Region location;
     ChunkHeightmap[][] data = new ChunkHeightmap[Constants.REGION_LEN_Z][Constants.REGION_LEN_X];
 
     public RegionHeightmap() {
     }
 
-    public RegionHeightmap(RegionLocation location, byte[] data) throws Exception {
+    public RegionHeightmap(Coord2D.Region location, byte[] data) throws Exception {
 
         if (data.length != DATA_SZ) {
             throw new Exception("input region data length invalid");
@@ -27,7 +26,7 @@ public class RegionHeightmap {
         for (int z = 0; z < Constants.REGION_LEN_Z; z++) {
             for (int x = 0; x < Constants.REGION_LEN_X; x++) {
 
-                ChunkLocation chunkLocation = new ChunkLocation(x, z, ReferenceFrame.REGION);
+                Coord2D.Chunk chunkLocation = new Coord2D.Chunk(x, z);
                 int bufPtr = ((Constants.REGION_LEN_Z * z) + x) * ChunkHeightmap.DATA_SZ;
 
                 ChunkHeightmap chunk = new ChunkHeightmap(
@@ -41,31 +40,28 @@ public class RegionHeightmap {
 
     public int getHeight(int x, int z) {
 
-        Tuple<MinecraftLocation> locationTuple = new BlockLocation(x, z)
-                .tryReferencedTo(ReferenceFrame.CHUNK);
+        Coord2D.Relative<Coord2D.Block, Coord2D.Chunk> blockChunkRelative = Coord2D.blockInChunk(new Coord2D.Block(x, z));
 
-        BlockLocation blockLocation = (BlockLocation) locationTuple.first();
-        ChunkLocation chunkLocation = (ChunkLocation) locationTuple.second();
+        Coord2D.Block blockLocation = blockChunkRelative.getRel();
+        Coord2D.Chunk chunkLocation = blockChunkRelative.getAbs();
 
         return data[chunkLocation.getZ()][chunkLocation.getX()]
                 .getHeight(
-                        blockLocation.getX(ReferenceFrame.CHUNK),
-                        blockLocation.getZ(ReferenceFrame.CHUNK));
+                        blockLocation.getX(),
+                        blockLocation.getZ()
+                );
     }
 
-    public ChunkHeightmap getChunk(ChunkLocation chunkLocation) {
-        return this.data[chunkLocation.getZ(ReferenceFrame.REGION)]
-                        [chunkLocation.getX(ReferenceFrame.REGION)];
+    public ChunkHeightmap getChunk(Coord2D.Chunk chunkLocation) {
+        return this.data[chunkLocation.getZ()][chunkLocation.getX()];
     }
 
     public void insertChunk(ChunkHeightmap chunk) {
-        ChunkLocation chunkLocation = chunk.getLocation();
-
-        this.data[chunkLocation.getZ(ReferenceFrame.REGION)]
-                 [chunkLocation.getX(ReferenceFrame.REGION)] = chunk;
+        Coord2D.Chunk chunkLocation = chunk.getLocation();
+        this.data[chunkLocation.getZ()][chunkLocation.getX()] = chunk;
     }
 
-    public RegionLocation getLocation() {
+    public Coord2D.Region getLocation() {
         return location;
     }
 }
