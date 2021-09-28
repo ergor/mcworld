@@ -2,12 +2,8 @@ package st.netb.mc.mcworld.rendering;
 
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.ChunkBuilder;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
-import st.netb.mc.mcworld.datastructs.raw.Tuple;
 
 import java.io.*;
 import java.nio.file.Paths;
@@ -68,9 +64,9 @@ public class IntermediateOutput {
             byte[] chunkData = chunk.getBytes();
 
             try {
-                Tuple<MinecraftLocation> locationTuple = chunk.getLocation().tryReferencedTo(ReferenceFrame.REGION);
-                ChunkLocation chunkLocation = (ChunkLocation) locationTuple.first();
-                RegionLocation regionLocation = (RegionLocation) locationTuple.second();
+                Coord2D.Relative<Coord2D.Chunk, Coord2D.Region> chunkRegionRelative = Coord2D.chunkInRegion(chunk.getLocation());
+                Coord2D.Chunk chunkLocation = chunkRegionRelative.getRel();
+                Coord2D.Region regionLocation = chunkRegionRelative.getAbs();
 
                 String fileName = regionLocation.getZ() + "-" + regionLocation.getX();
 
@@ -81,8 +77,8 @@ public class IntermediateOutput {
                         * Constants.REGION_LEN_X
                         * Constants.REGION_LEN_Z);
 
-                int offset = (chunkLocation.getZ(ReferenceFrame.REGION) * Constants.REGION_LEN_Z * chunkData.length)
-                        + (chunkLocation.getX(ReferenceFrame.REGION) * chunkData.length);
+                int offset = (chunkLocation.getZ() * Constants.REGION_LEN_Z * chunkData.length)
+                           + (chunkLocation.getX() * chunkData.length);
 
                 raf.seek(offset);
                 raf.write(chunkData);

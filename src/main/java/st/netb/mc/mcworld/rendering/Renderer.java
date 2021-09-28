@@ -15,18 +15,18 @@ public abstract class Renderer {
     /**
      * Maps all <i>valid</i> intermediate output files to a {@link Coord2D}
      */
-    Map<File, Coord2D> mapToRegions(List<File> intermediateFiles) {
+    Map<File, Coord2D.Region> mapToRegions(List<File> intermediateFiles) {
 
-        Map<File, Coord2D> map = new HashMap<>();
+        Map<File, Coord2D.Region> map = new HashMap<>();
 
         for (File file : intermediateFiles) {
 
             Matcher matcher = IntermediateOutput.tempFilePattern.matcher(file.getName());
             if (matcher.find()) {
-                RegionLocation regionLocation = new RegionLocation(
+                Coord2D.Region regionLocation = new Coord2D.Region(
                         Integer.parseInt(matcher.group(2)),
-                        Integer.parseInt(matcher.group(1)));
-
+                        Integer.parseInt(matcher.group(1))
+                );
                 map.put(file, regionLocation);
             }
             else {

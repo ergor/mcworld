@@ -7,7 +7,7 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
 import st.netb.mc.mcworld.datastructs.raw.geolocation.CoordinateSystem;
@@ -39,7 +39,7 @@ public class Main {
                 .filter(ws -> testArea.contains(ws.getArea()))
                 .collect(Collectors.toList());
 
-        Map<ChunkLocation, ChunkBuilder> incompleteChunks = new HashMap<>();
+        Map<Coord2D.Chunk, ChunkBuilder> incompleteChunks = new HashMap<>();
 
         File temporaryDir = new File("tmp");
 

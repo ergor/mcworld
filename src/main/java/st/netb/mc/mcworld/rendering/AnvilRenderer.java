@@ -5,9 +5,7 @@ import net.querz.nbt.mca.MCAFile;
 import net.querz.nbt.mca.MCAUtil;
 import st.netb.mc.mcworld.Constants;
 import st.netb.mc.mcworld.datastructs.minecraft.Block;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.RegionLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 import st.netb.mc.mcworld.datastructs.raw.ChunkHeightmap;
 import st.netb.mc.mcworld.datastructs.raw.RegionHeightmap;
 
@@ -39,7 +37,7 @@ public class AnvilRenderer extends Renderer {
             }
         }
 
-        Map<File, RegionLocation> regionLocationMap = mapToRegions(
+        Map<File, Coord2D.Region> regionLocationMap = mapToRegions(
                 Arrays.asList(intermediateDir.listFiles()));
 
         for (File file : regionLocationMap.keySet()) {
@@ -65,7 +63,7 @@ public class AnvilRenderer extends Renderer {
         for (int z = 0; z < Constants.REGION_LEN_Z; z++) {
             for (int x = 0; x < Constants.REGION_LEN_X; x++) {
 
-                ChunkLocation location = new ChunkLocation(x, z, ReferenceFrame.REGION);
+                Coord2D.Chunk location = new Coord2D.Chunk(x, z);
                 ChunkHeightmap chunkHeightmap = regionHeightmap.getChunk(location);
 
                 Chunk chunk = renderChunk(chunkHeightmap);

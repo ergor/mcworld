@@ -1,9 +1,6 @@
 package st.netb.mc.mcworld;
 
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.BlockLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.ChunkLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.MinecraftLocation;
-import st.netb.mc.mcworld.datastructs.minecraft.coordinates.referenceframe.ReferenceFrame;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 import st.netb.mc.mcworld.datastructs.raw.geolocation.Coordinate;
 import st.netb.mc.mcworld.datastructs.raw.World;
 import st.netb.mc.mcworld.datastructs.raw.Tuple;
@@ -28,7 +25,7 @@ public class WorldMapper {
     public static Tuple<List<ChunkBuilder>> toChunkBuilders(
             World world,
             WorldSection worldSection,
-            Map<ChunkLocation, ChunkBuilder> incompleteChunks) {
+            Map<Coord2D.Chunk, ChunkBuilder> incompleteChunks) {
 
         Coordinate worldOrigin = world.getArea().getOrigin();
         Coordinate sectionOrigin = worldSection.getArea().getOrigin();
@@ -37,7 +34,7 @@ public class WorldMapper {
 
         Raster raster = worldSection.getRaster();
 
-        Map<ChunkLocation, ChunkBuilder> chunkBuilderMap = new HashMap<>();
+        Map<Coord2D.Chunk, ChunkBuilder> chunkBuilderMap = new HashMap<>();
 
         for (int pixelY = 0; pixelY < raster.getHeight(); pixelY++) {
             for (int pixelX = 0; pixelX < raster.getWidth(); pixelX++) {
@@ -66,13 +63,15 @@ public class WorldMapper {
                  * Since we have already scaled by the factor above, we need to take the absolute value
                  * this time so we don't end up with negative positions.
                  */
-                Tuple<MinecraftLocation> locationTuple = new BlockLocation(
-                        (int) (worldPixelX * Math.abs(resX)),
-                        (int) (worldPixelY * Math.abs(resY)))
-                        .tryReferencedTo(ReferenceFrame.CHUNK);
+                Coord2D.Relative<Coord2D.Block, Coord2D.Chunk> blockChunkRelative = Coord2D.blockInChunk(
+                        new Coord2D.Block(
+                                (int) (worldPixelX * Math.abs(resX)),
+                                (int) (worldPixelY * Math.abs(resY))
+                        )
+                );
 
-                BlockLocation blockLocation = (BlockLocation) locationTuple.first();
-                ChunkLocation chunkLocation = (ChunkLocation) locationTuple.second();
+                Coord2D.Block blockLocation = blockChunkRelative.getRel();
+                Coord2D.Chunk chunkLocation = blockChunkRelative.getAbs();
 
                 float height = raster.getPixel(pixelX, pixelY, (float[]) null)[0];
 
