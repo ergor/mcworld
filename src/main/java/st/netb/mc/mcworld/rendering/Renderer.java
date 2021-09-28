@@ -1,6 +1,6 @@
 package st.netb.mc.mcworld.rendering;
 
-import st.netb.mc.mcworld.datastructs.minecraft.XZ;
+import st.netb.mc.mcworld.datastructs.minecraft.Coord2D;
 
 import java.io.File;
 import java.util.HashMap;
@@ -13,11 +13,11 @@ public abstract class Renderer {
     public abstract void render();
 
     /**
-     * Maps all <i>valid</i> intermediate output files to a {@link XZ}
+     * Maps all <i>valid</i> intermediate output files to a {@link Coord2D}
      */
-    Map<File, XZ> mapToRegions(List<File> intermediateFiles) {
+    Map<File, Coord2D> mapToRegions(List<File> intermediateFiles) {
 
-        Map<File, XZ> map = new HashMap<>();
+        Map<File, Coord2D> map = new HashMap<>();
 
         for (File file : intermediateFiles) {
 

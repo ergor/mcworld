@@ -11,12 +11,12 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * <li> Z: distance southwards. </li>
  * </ul>
  */
-public abstract class XZ {
+public abstract class Coord2D {
 
     /**
      * Represents the coordinate of a block.
      */
-    public static class Block extends XZ {
+    public static class Block extends Coord2D {
         public Block(int x, int z) {
             super(x, z);
         }
@@ -27,7 +27,7 @@ public abstract class XZ {
      * The coordinate of the chunk at the origin of the world is (0, 0),
      * and the chunk to the east of it is (1, 0).
      */
-    public static class Chunk extends XZ {
+    public static class Chunk extends Coord2D {
         public Chunk(int x, int z) {
             super(x, z);
         }
@@ -38,7 +38,7 @@ public abstract class XZ {
      * The coordinate of the region at the origin of the world is (0, 0),
      * and the region to the east of it is (1, 0).
      */
-    public static class Region extends XZ {
+    public static class Region extends Coord2D {
         public Region(int x, int z) {
             super(x, z);
         }
@@ -69,7 +69,7 @@ public abstract class XZ {
     int x; // east
     int z; // south
 
-    public XZ(int x, int z) {
+    public Coord2D(int x, int z) {
         this.x = x;
         this.z = z;
     }
@@ -149,8 +149,8 @@ public abstract class XZ {
      */
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof XZ) {
-            XZ that = (XZ) obj;
+        if (obj instanceof Coord2D) {
+            Coord2D that = (Coord2D) obj;
             if ((this instanceof Block && that instanceof Block)
                     || (this instanceof Chunk && that instanceof Chunk)
                     || (this instanceof Region && that instanceof Region)) {
