@@ -20,6 +20,22 @@ public abstract class Coord2D {
         public Block(int x, int z) {
             super(x, z);
         }
+
+        /**
+         * The distance eastwards
+         */
+        @Override
+        public int getX() {
+            return x;
+        }
+
+        /**
+         * The distance southwards
+         */
+        @Override
+        public int getZ() {
+            return z;
+        }
     }
 
     /**
@@ -31,6 +47,22 @@ public abstract class Coord2D {
         public Chunk(int x, int z) {
             super(x, z);
         }
+
+        /**
+         * The distance eastwards
+         */
+        @Override
+        public int getX() {
+            return x;
+        }
+
+        /**
+         * The distance southwards
+         */
+        @Override
+        public int getZ() {
+            return z;
+        }
     }
 
     /**
@@ -41,6 +73,22 @@ public abstract class Coord2D {
     public static class Region extends Coord2D {
         public Region(int x, int z) {
             super(x, z);
+        }
+
+        /**
+         * The distance eastwards
+         */
+        @Override
+        public int getX() {
+            return x;
+        }
+
+        /**
+         * The distance southwards
+         */
+        @Override
+        public int getZ() {
+            return z;
         }
     }
 
@@ -77,16 +125,12 @@ public abstract class Coord2D {
     /**
      * The distance eastwards
      */
-    public int getX() {
-        return x;
-    }
+    abstract int getX();
 
     /**
      * The distance southwards
      */
-    public int getZ() {
-        return z;
-    }
+    abstract int getZ();
 
     public static Relative<Block, Region> blockInRegion(Block blockInWorld) {
         throw new NotImplementedException();
@@ -96,7 +140,7 @@ public abstract class Coord2D {
      * @param blockInWorld the absolute coordinate of the block in the world
      * @return the blocks's relative coordinate in its chunk, and the absolute coordinate of that chunk in the world
      */
-    private static Relative<Block, Chunk> blockInChunk(Block blockInWorld) {
+    public static Relative<Block, Chunk> blockInChunk(Block blockInWorld) {
         int blockX = blockInWorld.x % Constants.CHUNK_LEN_X;
         int blockZ = blockInWorld.z % Constants.CHUNK_LEN_Z;
 
