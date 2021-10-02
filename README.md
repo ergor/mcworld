@@ -13,10 +13,10 @@ additional data layers for things like streets/roads, biomes (forests, beaches, 
 Run program:
 
 ```
-java -jar mcworld-<VERSION>.jar <input data directory> [flags]
+java -jar mcworld.jar <input data directory> [flags]
 ```
 
-where `input data directory` is the path to the folder containing terrain data,
+where `<input data directory>` is the path to the folder containing terrain data,
 and `flags` can be any of:
 
 - `-f` fast render (re-render using stored intermediate data)
@@ -34,8 +34,8 @@ To use the rendered map in Minecraft, copy and paste files from `anvil` into:
 
 ## Compilation
 
-This is a maven-based IntelliJ project. Open it in IntelliJ, or build using maven directly; use `mvn package`, 
-or use `mvn compile` to skip generating JAR.
+This is a maven-based IntelliJ project. Open it in IntelliJ, or build using maven directly; use `mvn package` 
+to build a JAR file, or use `mvn compile` to only build .class files.
 
 ### Credits / resources
 
