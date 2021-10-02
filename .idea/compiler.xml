@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="mcworld" target="8" />
+      <module name="mcworld" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

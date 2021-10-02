@@ -29,15 +29,7 @@ public class Main {
         World world = getWorld(FileType.SOSI, new File(args[0]).toPath());
         boolean fastRender = Arrays.asList(args).contains("-f");
 
-        GeoArea testArea = new GeoArea(
-                GeodeticDatum.EUREF89,
-                CoordinateSystem.UTM32N,
-                new Coordinate(597255, 6640726),
-                new Coordinate(601000, 6643455));
-
-        List<WorldSection> worldSections = world.getSections().stream()
-                .filter(ws -> testArea.contains(ws.getArea()))
-                .collect(Collectors.toList());
+        List<WorldSection> worldSections = world.getSections();
 
         Map<Coord2D.Chunk, ChunkBuilder> incompleteChunks = new HashMap<>();
 
