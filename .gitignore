@@ -76,5 +76,5 @@ fabric.properties
 target
 data
 tmp
-out
+preview
 anvil

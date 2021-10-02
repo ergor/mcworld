@@ -63,7 +63,7 @@ public class Main {
         }
 
         System.out.println("rendering GIF...");
-        GifRenderer gif = new GifRenderer(temporaryDir, new File("out"));
+        GifRenderer gif = new GifRenderer(temporaryDir, new File("preview"));
         gif.render();
 
         System.out.println("rendering minecraft world...");

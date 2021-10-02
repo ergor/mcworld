@@ -24,7 +24,7 @@ and `flags` can be any of:
 mcworld rendering will produce output in the follow locations:
 
 - `tmp/`: raw, intermediate data is stored here.
-- `out/`: a preview image of the rendered map is stored here.
+- `preview/`: a preview image of the rendered map is stored here.
 - `anvil/`: the map itself is stored here. 
 
 To use the rendered map in Minecraft, copy and paste files from `anvil` into:
