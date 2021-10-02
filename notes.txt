@@ -3,14 +3,21 @@ height data: kartverket, hoydedata.no
 format:
 sections are exported as GeoTIFF, and for each tile x there are the following files:
 
-    x.tif               the heightmap itself
+    x.tif               the GeoTIFF heightmap itself. also contains geo metadata.
     x.tif.ovr           overview (3 thumbnails of differing size on separate layers)
     x.tif.aux.xml       geodata and statistics, eg. min and max height, histogram etc.
-    x.tfw               world file, describes the location, scale and rotation
-    x.sos               SOSI-format file, metadata
+    x.tfw               tiff world file, alternative to embedded GeoTIFF metadata.
+    x.sos               SOSI-format file, geo metadata as well.
 
 the value of a pixel seems to correspond 1:1 to the height in meters.
 
+using either the .tif alone with the embedded GeoTIFF data, the TIFF World File, or the SOSI file
+should yield the exact same results.
+
+NOTE: the following is made obsolete by javax.imageio.
+(JAI is obsolete. javax.imageio works fine for reading GeoTIFF floating point image data.)
+
+-- BEGIN OBSOLETE INFO --
 "I was able to find an alternative Java imaging library called Apache Commons Imaging. 
 It is a pure-Java library that consists of a single small JAR file. 
 It also supports both reading and writing of the TIFF file format and 
@@ -27,8 +34,7 @@ JAI works, but:
 maven fails to resolve JAI, _unless_ I add geotools repo and install it.
 it seems to pull JAI in as a dependency.
     -> yes indeed, http://download.osgeo.org/webdav/geotools has JAI
-
-
+-- END OBSOLETE INFO --
 
 // step 0:
 // select sub-area of world such that dimensions are divisible by
